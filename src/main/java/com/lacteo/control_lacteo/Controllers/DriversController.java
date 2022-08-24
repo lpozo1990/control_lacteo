@@ -1,12 +1,13 @@
 package com.lacteo.control_lacteo.Controllers;
 
-import java.io.Console;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 
+import com.lacteo.control_lacteo.Entities.Chofer;
 import com.lacteo.control_lacteo.Service.ChoferService;
 
 @Controller
@@ -19,12 +20,24 @@ public class DriversController {
     }
     @RequestMapping("/")
     String listAll(Model model){
+     model.addAttribute("Chofer", new Chofer());
      model.addAttribute("choferes", this.choferService.listAllChofers());
-     System.out.println("im here");
      return "index";   
     }
-
-    String newDriver(){
-     return "";   
+    /**
+     * Delete chofer by its id.
+     *
+     * @param id
+     * @return
+     */
+    @RequestMapping("chofer/eliminar/{id}")
+    public String delete(@PathVariable Integer id) {
+        choferService.deleteChofer(id);
+        return "redirect:/";
+    }
+    @RequestMapping(value = "newChofer", method = RequestMethod.POST)
+    public String savedriver(Chofer driver) {
+        choferService.saveChofer(driver);
+        return "redirect:/";
     }
 }

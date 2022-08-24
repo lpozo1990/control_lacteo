@@ -90,24 +90,34 @@
             </thead>
             <tbody>
               <tr th:each="chofer : ${choferes}">
-                <th th:text="${chofer.id}" scope="row"><a href="#"></a> </th>
-                <th th:text="${chofer.nombre}" scope="row"><a href="#"></a> </th>
-                <td><a onclick="alert('Desea eliminar?')" href="#">Eliminar</a></td>
+                <td th:text="${chofer.nombre}" scope="row"><a href="#"></a> </td>
+                <td th:text="${chofer.apellidos}" scope="row"><a href="#"></a> </td>
+                <td><a  th:onclick="deseaEliminar([[${chofer.id}]], [[${chofer.nombre}]])"  href="#">Eliminar</a></td>
               </tr>
             </tbody>
           </table>
           <div class="container d-none control-datos-nombre-chofer">
-            <form>
+            <form th:object="${Chofer}" th:action="@{/newChofer}" method="post">
               <div class="mb-3">
                 <label for="exampleInputEmail1" class="form-label"
                   >Nombre del Chofer</label
                 >
                 <input
-                  type="email"
+                  type="text"
                   class="form-control"
-                  id="exampleInputEmail1"
+                  id="nombreChoferInput"
+                  th:field="*{nombre}"
                   value=""
-                  aria-describedby="emailHelp"
+                />
+                <label for="exampleInputEmail1" class="form-label"
+                  >Apellidos</label
+                >
+                <input
+                  type="text"
+                  class="form-control"
+                  th:field="*{apellidos}"
+                  id="apellidosChoferInput"
+                  value=""
                 />
                 </div>
               <button type="submit" class="btn btn-primary crearNuevo">Crear</button>
@@ -120,12 +130,23 @@
       src="../static/js/bootstrap.min.js"
     ></script>
     <script>
+      async function deseaEliminar(id, nombre){
+        let confirmation = window.confirm(`Desea eliminar al chofer ${nombre}?`);
+        if(confirmation) {
+          await fetch('/chofer/eliminar/' + id, {
+          method: 'DELETE',
+      })
+      window.location.reload()
+        }
+
+      }
       let form = document.querySelector(".control-datos-nombre-chofer");
       let list = document.querySelector(".tabla-choferes");
       function addNew(){        
         form.classList.remove("d-none");
         list.classList.add("d-none");
       }
+
     </script>
   </body>
 </html>

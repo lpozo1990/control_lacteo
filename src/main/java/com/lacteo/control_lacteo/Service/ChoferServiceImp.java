@@ -26,15 +26,13 @@ public class ChoferServiceImp implements ChoferService {
     }
 
     @Override
-    public Chofer saveChofer(Chofer product) {
-        // TODO Auto-generated method stub
-        return null;
+    public Chofer saveChofer(Chofer chofer) {
+        return this.choferRepository.save(chofer);
     }
 
     @Override
     public void deleteChofer(Integer id) {
-        // TODO Auto-generated method stub
-        
+        this.choferRepository.deleteById(id); 
     }
     
 }
