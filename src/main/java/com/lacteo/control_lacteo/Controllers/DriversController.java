@@ -35,6 +35,7 @@ public class DriversController {
         choferService.deleteChofer(id);
         return "redirect:/";
     }
+    
     @RequestMapping(value = "newChofer", method = RequestMethod.POST)
     public String savedriver(Chofer driver) {
         choferService.saveChofer(driver);
