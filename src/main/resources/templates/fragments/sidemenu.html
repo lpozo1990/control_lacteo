@@ -19,7 +19,7 @@
             </a>
           </li>
           <li>
-            <a href="#" class="nav-link text-white">
+            <a th:href="@{/municipios}" th:classappend="${#request.getServletPath() == '/municipios' ? 'active' : ''}" class="nav-link text-white">
               <svg class="bi me-2" width="16" height="16"><use xlink:href="#table"/></svg>
               Municipio
             </a>
@@ -33,7 +33,7 @@
               <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
                 <li><a class="dropdown-item" href="#">
                   <form action="/logout" th:action="@{/logout}" method="post">
-                    <input class="btn btn-outline-success " type="submit" value="logout">
+                    <input class="nav-link " type="submit" value="logout">
                 </form>
                 </a></li>
               </ul>

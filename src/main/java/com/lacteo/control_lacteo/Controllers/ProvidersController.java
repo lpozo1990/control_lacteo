@@ -1,6 +1,7 @@
 package com.lacteo.control_lacteo.Controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,14 +26,15 @@ public class ProvidersController {
     }
 
     @GetMapping("/proveedores")
-    String GetProviders(Model model){
-     model.addAttribute("proveedores", this.providersService.listAllProviders());
-     model.addAttribute("Proveedor", new Proveedor());
-    return "proveedores";
+    String GetProviders(Model model) {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        model.addAttribute("username", username);
+        model.addAttribute("proveedores", this.providersService.listAllProviders());
+        model.addAttribute("Proveedor", new Proveedor());
+        return "proveedores";
     }
 
-
-        /**
+    /**
      * Delete proveedor by its id.
      *
      * @param id
@@ -47,6 +49,6 @@ public class ProvidersController {
     @RequestMapping(value = "newProvider", method = RequestMethod.POST)
     public String savedriver(Proveedor proveedor) {
         providersService.saveProveedor(proveedor);
-        return "redirect:/";
+        return "redirect:/proveedores";
     }
 }

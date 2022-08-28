@@ -22,8 +22,8 @@ public class DriversController {
     @RequestMapping("/")
     String listAll(Model model){
      String username = SecurityContextHolder.getContext().getAuthentication().getName();
-     model.addAttribute("Chofer", new Chofer());
      model.addAttribute("username", username);
+     model.addAttribute("Chofer", new Chofer());
      model.addAttribute("choferes", this.choferService.listAllChofers());
      return "index";   
     }
