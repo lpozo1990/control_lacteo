@@ -1,6 +1,4 @@
 package com.lacteo.control_lacteo.Entities;
-
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;

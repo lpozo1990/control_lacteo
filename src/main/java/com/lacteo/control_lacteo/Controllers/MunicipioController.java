@@ -4,7 +4,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.lacteo.control_lacteo.Entities.Municipio;
 import com.lacteo.control_lacteo.Service.MunicipioService;
@@ -27,6 +29,17 @@ public class MunicipioController {
      return "municipios";   
     }
 
+    @RequestMapping("municipio/eliminar/{id}")
+    public String delete(@PathVariable Integer id) {
+        municipioService.deleteMunicipio(id);
+        return "redirect:/";
+    }
+    
+    @RequestMapping(value = "nuevoMunicipio", method = RequestMethod.POST)
+    public String savedriver(Municipio municipio) {
+        municipioService.saveMunicipio(municipio);
+        return "redirect:/municipios";
+    }
 
 
 }

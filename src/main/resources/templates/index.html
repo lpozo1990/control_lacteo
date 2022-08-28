@@ -138,10 +138,9 @@ th:src="@{/js/bootstrap.bundle.js}"
         src="../static/js/jquery-3.6.0.min.js"
       ></script>
     <script>
-      
-          $("#logout").click(function() {
-            var token = $("meta[name='_csrf']").attr("content");
-           var header = $("meta[name='_csrf_header']").attr("content");
+      var token = $("meta[name='_csrf']").attr("content");
+     var header = $("meta[name='_csrf_header']").attr("content");
+      $("#logout").click(function() {
     $.ajax({
         url : 'logout',
         type : 'POST',
@@ -150,7 +149,7 @@ th:src="@{/js/bootstrap.bundle.js}"
              xhr.setRequestHeader(header, token);
         },
         success : function(data) { 
-            window.location ="/";    //here is the only problem, for some reason after logging out page doesnt refresh and i can still see myself logged in. Then i usually just press f5 and i am logged out.
+            window.location ="/";    
         }, 
         error : function(data) {
             console.log(data);
@@ -161,13 +160,24 @@ th:src="@{/js/bootstrap.bundle.js}"
       async function deseaEliminar(id, nombre){
         let confirmation = window.confirm(`Desea eliminar al chofer ${nombre}?`);
         if(confirmation) {
-          await fetch('/chofer/eliminar/' + id, {
-          method: 'DELETE',
-      })
-      window.location.reload()
+          $.ajax({
+            url: "/chofer/eliminar/" + id,
+            type : 'DELETE',
+        data: token,
+        beforeSend:function(xhr){
+             xhr.setRequestHeader(header, token);
+        },
+        success : function(data) { 
+            window.location ="/";    
+        }, 
+        error : function(data) {
+            console.log(data);
+        }
+          })
         }
 
       }
+      
       let form = document.querySelector(".control-datos-nombre-chofer");
       let list = document.querySelector(".tabla-choferes");
       function addNew(){        

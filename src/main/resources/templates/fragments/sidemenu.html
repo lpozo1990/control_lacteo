@@ -27,14 +27,12 @@
           <hr>
           <li>
             <div class="dropdown">
-              <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+              <button class="btn w-100 btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
                 Usuario: <span th:text="${username}"></span>
               </button>
               <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
                 <li><a class="dropdown-item" href="#">
-                  <form action="/logout" th:action="@{/logout}" method="post">
-                    <input class="nav-link " type="submit" value="logout">
-                </form>
+                    <div id="logout">Salir</div>
                 </a></li>
               </ul>
             </div>
@@ -42,3 +40,4 @@
         </ul>
       </div>
 </div>
+
