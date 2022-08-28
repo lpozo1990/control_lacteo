@@ -1,6 +1,7 @@
 package com.lacteo.control_lacteo.Controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -20,7 +21,9 @@ public class DriversController {
     }
     @RequestMapping("/")
     String listAll(Model model){
+     String username = SecurityContextHolder.getContext().getAuthentication().getName();
      model.addAttribute("Chofer", new Chofer());
+     model.addAttribute("username", username);
      model.addAttribute("choferes", this.choferService.listAllChofers());
      return "index";   
     }
