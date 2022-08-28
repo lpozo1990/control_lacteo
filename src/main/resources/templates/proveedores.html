@@ -11,6 +11,9 @@
      th:href="@{/css/bootstrap.min.css}" rel="stylesheet"
       href="../static/css/bootstrap.min.css"
     />
+    <link
+     th:href="@{/css/jquery.dataTables.min.css}" rel="stylesheet"
+    />
   </head>
   <style>
     .autocomplete {
@@ -112,26 +115,29 @@
         <div class="container d-flex">
             <div th:replace="fragments/sidemenu :: sidemenu"></div>
             <div class="container">
-            <a name="" id="crearNuevoChocher" onclick="addNew()" class="btn btn-primary float-end" href="#" role="button">Crear Proveedor</a>
-          <table class="table  tabla-choferes">
-            <thead>
-              <tr>
-                <th scope="col">Codigo</th>
-                <th scope="col">Nombre</th>
-                <th scope="col">Cantidad de Leche</th>
-                <th scope="col">Acciones</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr th:each="proveedor: ${proveedores}">
-                <td th:text="${proveedor.codigo}" scope="row"><a href="#"></a> </td>
-                <td th:text="${proveedor.nombre}" scope="row"><a href="#"></a> </td>
-                <td th:text="${proveedor.cantidadDeLeche}" scope="row"><a href="#"></a> </td>
-                <td><a  th:onclick="deseaEliminar([[${proveedor.id}]], [[${proveedor.nombre}]])"  href="#">Eliminar</a></td>
-              </tr>
-            </tbody>
-          </table>
-          <div class="container d-none control-datos-nombre-proveedor">
+            <a name="" id="crearNuevoChocher" onclick="addNew()" class="btn btn-primary float-end mb-2" href="#" role="button">Crear Proveedor</a>
+          <div class="tabla-container">
+            <table class="table  tabla-choferes">
+              <thead>
+                <tr>
+                  <th scope="col">Codigo</th>
+                  <th scope="col">Nombre</th>
+                  <th scope="col">Cantidad de Leche</th>
+                  <th scope="col">Acciones</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr th:each="proveedor: ${proveedores}">
+                  <td th:text="${proveedor.codigo}" scope="row"><a href="#"></a> </td>
+                  <td th:text="${proveedor.nombre}" scope="row"><a href="#"></a> </td>
+                  <td th:text="${proveedor.cantidadDeLeche}" scope="row"><a href="#"></a> </td>
+                  <td><a  th:onclick="deseaEliminar([[${proveedor.id}]], [[${proveedor.nombre}]])"  href="#">Eliminar</a></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="container d-none mt-3 control-datos-nombre-proveedor">
             <form autocomplete="off" th:object="${Proveedor}" th:action="@{/newProvider}" method="post">
               <div class="mb-3">
                 <label for="exampleInputEmail1" class="form-label"
@@ -184,6 +190,7 @@
 
                 </div>
               <button type="submit" class="btn btn-primary crearNuevo">Crear</button>
+              <a href="javascript: window.location.reload()"  class="btn btn-secondary">Atras</a>
             </form>
         </div>
       </div>
@@ -196,6 +203,9 @@
         src="../static/js/bootstrap.bundle.min.js"
       ></script>
       <script
+      th:src="@{/js/jquery.dataTables.min.js}"
+      ></script>
+      <script
       th:src="@{/js/ajaxRequest.js}"
         src="../static/js/ajaxRequest.js"
       ></script>
@@ -204,6 +214,13 @@
         src="../static/js/autocomplete.js"
       ></script>
       <script>
+        $(document).ready( function () {
+    var DataTable = $('.tabla-choferes').DataTable({
+      language: {
+            url: window.location.origin + '/js/es-AR.json'
+        }
+    });
+} );
      var token = $("meta[name='_csrf']").attr("content");
      var header = $("meta[name='_csrf_header']").attr("content");
      async function deseaEliminar(id, nombre){
@@ -212,7 +229,7 @@
       }
 
       let form = document.querySelector(".control-datos-nombre-proveedor");
-      let list = document.querySelector(".tabla-choferes");
+      let list = document.querySelector(".tabla-container");
       function addNew(){        
         form.classList.remove("d-none");
         list.classList.add("d-none");
