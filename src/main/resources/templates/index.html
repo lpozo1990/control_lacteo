@@ -4,6 +4,9 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <!-- default header name is X-CSRF-TOKEN -->
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
     <title>Control Lacteo</title>
     
     <link
@@ -134,9 +137,27 @@ th:src="@{/js/bootstrap.bundle.js}"
       th:src="@{/js/jquery-3.6.0.min.js}"
         src="../static/js/jquery-3.6.0.min.js"
       ></script>
-      
-
     <script>
+      
+          $("#logout").click(function() {
+            var token = $("meta[name='_csrf']").attr("content");
+           var header = $("meta[name='_csrf_header']").attr("content");
+    $.ajax({
+        url : 'logout',
+        type : 'POST',
+        data: token,
+        beforeSend:function(xhr){
+             xhr.setRequestHeader(header, token);
+        },
+        success : function(data) { 
+            window.location ="/";    //here is the only problem, for some reason after logging out page doesnt refresh and i can still see myself logged in. Then i usually just press f5 and i am logged out.
+        }, 
+        error : function(data) {
+            console.log(data);
+        }
+    });
+          });
+        
       async function deseaEliminar(id, nombre){
         let confirmation = window.confirm(`Desea eliminar al chofer ${nombre}?`);
         if(confirmation) {
