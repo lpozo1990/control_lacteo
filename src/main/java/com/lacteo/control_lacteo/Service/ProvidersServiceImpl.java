@@ -34,5 +34,10 @@ public class ProvidersServiceImpl implements ProvidersService {
     public void deleteProveedor(Integer id) {
         this.providerRepository.deleteById(id); 
     }
+
+    @Override
+    public Iterable<Proveedor> getByCat(Integer cantidad) {
+        return this.providerRepository.findAllByCantidadDeLeche(cantidad);
+    }
     
 }

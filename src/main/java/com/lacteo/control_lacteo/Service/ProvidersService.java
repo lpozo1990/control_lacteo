@@ -4,7 +4,8 @@ import com.lacteo.control_lacteo.Entities.Proveedor;
 
 public interface  ProvidersService {
 
-   
+    Iterable<Proveedor> getByCat(Integer cantidad);
+
     Iterable<Proveedor> listAllProviders();
 
     Proveedor getProveedorById(Integer id);
