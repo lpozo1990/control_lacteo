@@ -72,6 +72,28 @@
   <script>
         $(document).ready( function () {
     var DataTable = $('.tabla-municipios').DataTable({
+      dom: 'Bfrtip',
+       
+      buttons: [
+       {
+                extend: 'print',
+                exportOptions: {
+                    columns: [0,1,2]
+                }
+            },
+            {
+                extend: 'excelHtml5',
+                exportOptions: {
+                  columns: [0, 1, 2]
+                }
+            },
+            {
+                extend: 'pdfHtml5',
+                exportOptions: {
+                    columns: [ 0, 1, 2]
+                }
+            },
+    ],
       language: {
             url: window.location.origin + '/js/es-AR.json'
         }
