@@ -49,7 +49,8 @@ public class ProvidersController {
 
     @RequestMapping(value = "newProvider", method = RequestMethod.POST)
     public String savedriver(Proveedor proveedor) {
-        providersService.saveProveedor(proveedor);
+        Proveedor p = providersService.saveProveedor(proveedor);
+        providersService.incrementInMunicipio(p.getMunicipio(), p.getCantidadDeLeche());
         return "redirect:/proveedores";
     }
 }

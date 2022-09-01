@@ -14,6 +14,8 @@ public interface  ProvidersService {
 
     void deleteProveedor(Integer id);
 
+    void incrementInMunicipio(String municipio, Integer cantidadDeLeche);
+
 
 }
 

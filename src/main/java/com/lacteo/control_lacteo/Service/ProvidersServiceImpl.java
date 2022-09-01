@@ -40,4 +40,9 @@ public class ProvidersServiceImpl implements ProvidersService {
         return this.providerRepository.findAllByCantidadDeLeche(cantidad);
     }
     
+    @Override
+    public void incrementInMunicipio(String municipio, Integer cantidadDeLeche) {
+        this.providerRepository.incrementInMunicipio(municipio, cantidadDeLeche);
+    }
+    
 }

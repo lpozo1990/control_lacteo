@@ -10,6 +10,37 @@
     <div th:replace="fragments/css:: css"></div>
   </head>
   <style>
+    .autocomplete {
+  /*the container must be positioned relative:*/
+  position: relative;
+  display: inline-block;
+}
+    .autocomplete-items {
+  position: absolute;
+  border: 1px solid #d4d4d4;
+  border-bottom: none;
+  border-top: none;
+  z-index: 99;
+  /*position the autocomplete items to be the same width as the container:*/
+  top: 100%;
+  left: 0;
+  right: 0;
+}
+.autocomplete-items div {
+  padding: 10px;
+  cursor: pointer;
+  background-color: #fff;
+  border-bottom: 1px solid #d4d4d4;
+}
+.autocomplete-items div:hover {
+  /*when hovering an item:*/
+  background-color: #e9e9e9;
+}
+.autocomplete-active {
+  /*when navigating through the items using the arrow keys:*/
+  background-color: DodgerBlue !important;
+  color: #ffffff;
+}
     body{
         background-color: #f0ecec;
     }
@@ -21,7 +52,7 @@
         <div class="container d-flex">
             <div th:replace="fragments/sidemenu :: sidemenu"></div>
             <div class="container">
-            <a name="" id="crearNuevoMunicipio" onclick="addNew()" class="btn btn-primary mb-2 float-end" href="#" role="button">Crear Municipio</a>
+            <a name="" id="crearNuevoMunicipio" onclick="addNew()" class="btn btn-primary mb-3 float-end" href="#" role="button">Crear Municipio</a>
             <div class="tabla-container">
             <table class="table  tabla-municipios">
             <thead>
@@ -41,19 +72,24 @@
           </table>
           </div>
           <div class="container d-none control-datos-nombre-municipio">
-            <form autocomplete="off" th:object="${Municipio}" th:action="@{/nuevoMunicipio}" method="post">
+            <form autocomplete="off" th:object="${Municipio}" class="mt-4" th:action="@{/nuevoMunicipio}" method="post">
               <div class="mb-3">
-                <label for="exampleInputEmail1" class="form-label"
-                >Nombre del municipio</label
-              >
-              <input
-                type="text"
-                class="form-control"
-                id="nombre"
-                required
-                th:field="*{nombre}"
-                value=""
-              />
+                <div class="autocomplete w-100" >
+                  <label for="exampleInputEmail1" class="form-label"
+                  >Municipio</label
+                >
+                  <input
+                  type="text"
+                  required
+                  class="form-control"
+                  id="municipiosAutocomplete"
+                  th:field="*{nombre}"
+                  value=""
+                />
+                </div>
+              <label for="exampleInputEmail1" class="form-label mt-2"
+              >Cantidad de leche</label
+            >
               <input
                 type="text"
                 class="form-control"
@@ -110,5 +146,22 @@
         form.classList.remove("d-none");
         list.classList.add("d-none");
       }
+      let countries =  [
+        "Antilla",
+        "Báguanos",
+        "Banes",
+        "Cacocum",
+        "Calixto García",
+        "Cueto",
+        "Frank País",
+        "Gibara",
+        "Holguín",
+        "Mayarí",
+        "Moa",
+        "Rafael Freyre",
+        "Sagua de Tánamo",
+        "Urbano Noris"
+];
+autocomplete(document.getElementById("municipiosAutocomplete"), countries);
   </script>
 </html>
