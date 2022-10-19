@@ -18,7 +18,7 @@
   <body>
       <div th:replace="fragments/svg:: svg"></div>
       <div class="container">
-        <h1 class="m-2 text-center bg-light">Control Lacteo</h1>
+        <h1 class="m-2 text-center bg-light">Control Lácteo</h1>
         <div class="container d-flex">
             <div th:replace="fragments/sidemenu :: sidemenu"></div>
             <div class="container">
@@ -79,14 +79,16 @@
        buttons: [
        {
                 extend: 'print',
+                text:"Imprimir",
                 exportOptions: {
-                    columns: [0, 1]
+                    columns: [ 0]
                 }
             },
             {
                 extend: 'excelHtml5',
+                text:"XLS",
                 exportOptions: {
-                  columns: [0, 1]
+                    columns: ':visible'
                 }
             },
             {
