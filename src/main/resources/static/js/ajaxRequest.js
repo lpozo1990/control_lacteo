@@ -31,6 +31,22 @@
         xhr.setRequestHeader(header, token);
    },
    success : function(data) { 
+       window.location =redirectTo;    
+   }, 
+   error : function(data) {
+       console.log(data);
+   }
+     })
+
+ }
+   async function makeRequestGet(token, header, url, redirectTo){
+     $.ajax({
+       url: url,
+       type : 'GET',
+   beforeSend:function(xhr){
+        xhr.setRequestHeader(header, token);
+   },
+   success : function(data) { 
       //  window.location =redirectTo;    
    }, 
    error : function(data) {

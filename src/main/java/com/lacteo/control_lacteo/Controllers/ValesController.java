@@ -9,6 +9,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import com.lacteo.control_lacteo.Entities.Registro;
 import com.lacteo.control_lacteo.Service.NewRegistryService;
@@ -29,13 +30,6 @@ public class ValesController {
     String GetVales(Model model) {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         model.addAttribute("username", username);
-        DateFormatSymbols spanish_dfs = new DateFormatSymbols(Locale.forLanguageTag("es-ES"));
-        String[] months = spanish_dfs.getMonths();
-        int startIndex = 0, endIndex = 12;
-        // get the slice of the array
-        String[] sliceArray = slice(months, startIndex, endIndex);
-        System.out.println(Arrays.toString(sliceArray));
-        model.addAttribute("meses", sliceArray);
         model.addAttribute("years",  this.regService.getAllYears());
         System.out.println(this.regService.getAllRegForYear(2022));
         model.addAttribute("registros",  this.regService.getAllRegForYear(2022));
@@ -43,10 +37,15 @@ public class ValesController {
         return "vales";
     }
 
-    public static String[] slice(String[] array, int startIndex, int endIndex) {
-        // Get the slice of the Array
-        String[] slicedArray = Arrays.copyOfRange(array, startIndex, endIndex);
-        // return the slice
-        return slicedArray;
+    @GetMapping("/filterByYear/{year}")
+    String getFromCurrentYear(@PathVariable Integer year, Model model) {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        model.addAttribute("username", username);
+        model.addAttribute("years",  this.regService.getAllYears());
+        model.addAttribute("selectedYear",  year);
+        model.addAttribute("registros",  this.regService.getAllRegForYear(year));
+        model.addAttribute("Registro", new Registro());
+        return "vales";
     }
+
 }
