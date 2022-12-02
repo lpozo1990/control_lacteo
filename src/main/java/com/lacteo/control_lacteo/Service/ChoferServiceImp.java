@@ -1,5 +1,7 @@
 package com.lacteo.control_lacteo.Service;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -34,5 +36,10 @@ public class ChoferServiceImp implements ChoferService {
     public void deleteChofer(Integer id) {
         this.choferRepository.deleteById(id); 
     }
+    
+	@Override
+	public  Object[] listAllChofersNames() {
+        return this.choferRepository.findNames();
+	}
     
 }

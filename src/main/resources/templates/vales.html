@@ -55,7 +55,7 @@
         <div class="container d-flex">
             <div th:replace="fragments/sidemenu :: sidemenu"></div>
             <div class="container">
-            <a name="" id="crearNuevoChocher" onclick="addNew()" class="btn btn-primary float-end mb-2" href="#" role="button">Crear Vale</a>
+            <a name="" id="crearNuevoVale" onclick="addNew()" class="btn btn-primary float-end mb-2" href="#" role="button">Crear Vale</a>
             <select name="year" class="year" id="year">
               <option value="">Año</option>
               <option value="2022">2022</option>
@@ -81,16 +81,19 @@
           <div class="container d-none mt-3 control-datos-nombre-proveedor">
             <form autocomplete="off"  th:action="@{/newProvider}" method="post">
               <div class="mb-3">
-                <label for="exampleInputEmail1" class="form-label"
-                >Nombre del chofer</label
-              >
-              <input
-                type="text"
-                class="form-control"
-                id="nombreChoferInput"
-                required
-                value=""
-              />
+                <div class="autocomplete w-100">
+                  <label for="exampleInputEmail1" class="form-label"
+                  >Nombre del chofer</label
+                >
+                <input
+                  type="text"
+                  class="form-control"
+                  id="nombreChoferInput"
+                  required
+                  value=""
+                />
+                </div>
+
               <label for="exampleInputEmail1" class="form-label"
                   >Fecha</label
                 >
@@ -98,7 +101,7 @@
                   type="date"
                   required
                   class="form-control"
-                  id="nombreChoferInput"
+                  id="fechaInput"
                   value=""
                 />
                 <div class="d-flex">
@@ -110,7 +113,7 @@
                     type="text"
                     required
                     class="form-control"
-                    id="nombreChoferInput"
+                    id="rutaInput"
                     value=""
                   />
                   </div>
@@ -122,27 +125,60 @@
                     type="number"
                     required
                     class="form-control"
-                    id="nombreChoferInput"
-                    value=""
+                    id="cantidadSegunPesa"
+                    onchange="calculateDiference()"
+                    value="0"
                   />
                   </div>
             
                 </div>
 
-              
-              <div class="autocomplete w-100" >
-                <label for="exampleInputEmail1" class="form-label"
-                >Municipio</label
-              >
-                <input
-                type="text"
-                required
-                class="form-control"
-                id="municipiosAutocomplete"
-                value=""
-              />
-              </div>
-
+                <div class="d-flex justify-content-between bg-light p-1">
+                  <div class="numeroDeVale py-2">
+                    <label for="exampleInputEmail1" class="form-label"
+                    >Numero de vale</label
+                  >
+                  <input
+                    type="text"
+                    required
+                    class="form-control"
+                    id="numeroDeVale"
+                    value=""
+                  />
+                  </div>
+                  <div class="proovedorCodigo py-2">
+                    <label for="exampleInputEmail1" class="form-label"
+                    >Proovedor</label
+                  >
+                  <input
+                    type="number"
+                    required
+                    class="form-control"
+                    id="proovedorCodigo"
+                    value=""
+                  />
+                  </div>
+                  <div class="cantidadLeche py-2">
+                    <label for="exampleInputEmail1" class="form-label"
+                    >Cantidad de Leche</label
+                  >
+                  <input
+                    type="number"
+                    required
+                    class="form-control"
+                    id="cantidadLeche"
+                    onchange="calculateDiference()"
+                    value="0"
+                  />
+                  </div>
+                  <div class="plusIcon">
+                    <img style="cursor: pointer;" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAABmJLR0QA/wD/AP+gvaeTAAAAiUlEQVRIie2WOw6AIAxAn8ZT+dkl3v8C4D1wMAwaEpHWgdiXsLW8toEAGH9kA3YgKq0AuBJxUJSm5e+SLiOOJdVVcHH1H0kekYgnYKlNlow65b6NBxodtYnF3C//WLHHnNnnQknHuZMvzrHrZOLPGAS5E4LC7T2G87+lTSgJcuj+uzywKjZhNMIB+71PTa5DlQgAAAAASUVORK5CYII=">
+                  </div>
+                </div>
+                <div class="totals bg-light d-flex">
+                  <p style="margin-right: 2rem;">Total: <span class="total">0</span></p>
+                  <p>Diferencia: <span class="diferencia">0</span></p>
+                </div>
                 </div>
               <button type="submit" class="btn btn-primary crearNuevo">Crear</button>
               <a href="javascript: window.location.reload()"  class="btn btn-secondary">Atras</a>
@@ -152,6 +188,7 @@
       <div th:replace="fragments/js:: js"></div>
       <script>
         $(document).ready( function () {
+
     var DataTable = $('.tabla-vales').DataTable({
       dom: 'Bfrtip',
       "order": [],
@@ -192,29 +229,31 @@
 
       let form = document.querySelector(".control-datos-nombre-proveedor");
       let list = document.querySelector(".tabla-container");
+      let diferencia = document.querySelector(".diferencia");
       let yearSelector = document.querySelector(".year");
+      let crearNuevoVale = document.querySelector("#crearNuevoVale");
+      let cantidadLeche = document.querySelector("#cantidadLeche");
+      let cantidadSegunPesa = document.querySelector("#cantidadSegunPesa");
+      function calculateDiference(){
+        diferencia.textContent = cantidadSegunPesa.value - cantidadLeche.value;  
+      }
+      let nombres = [];
       function addNew(){        
+        $(function(){
+            $.getJSON("http://localhost:8080/driversByName", function(data) {
+              nombres = data.map((i) => i[0] + " " +  i[1]);
+              console.log(nombres)
+              autocomplete(document.getElementById("nombreChoferInput"), nombres);
+        });
+        })
+
         form.classList.remove("d-none");
         list.classList.add("d-none");
         yearSelector.classList.add("d-none");
+        crearNuevoVale.classList.add("d-none");
       }
-      let countries =  [
-        "Antilla",
-        "Báguanos",
-        "Banes",
-        "Cacocum",
-        "Calixto García",
-        "Cueto",
-        "Frank País",
-        "Gibara",
-        "Holguín",
-        "Mayarí",
-        "Moa",
-        "Rafael Freyre",
-        "Sagua de Tánamo",
-        "Urbano Noris"
-];
-autocomplete(document.getElementById("municipiosAutocomplete"), countries);
+
+
       </script>
   </body>
 </html>
