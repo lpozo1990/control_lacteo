@@ -236,7 +236,7 @@
       var año = new Date($("#fechaInput").val()).getFullYear();
       var data = { "mes": mes, "year": año, "cantidadDeLeche": +$("#cantidadLeche").val()};
       console.log(data);
-      let url  =  "http://localhost:8080/newRegistry";
+      let url  =  "/newRegistry";
       let redirectTo = "/vales";
       makeRequestPost(token, header, url, data, redirectTo);
       }
