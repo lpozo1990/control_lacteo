@@ -53,6 +53,11 @@
             <div th:replace="fragments/sidemenu :: sidemenu"></div>
             <div class="container">
             <a name="" id="crearNuevoChocher" onclick="addNew()" class="btn btn-primary float-end mb-2" href="#" role="button">Crear Vale</a>
+            <select name="year" class="year" id="year">
+              <option value="">Año</option>
+              <option value="2022">2022</option>
+              <option value="2021">2021</option>
+            </select>
           <div class="tabla-container">
             <table class="table  tabla-vales">
               <thead>
@@ -71,17 +76,16 @@
           </div>
 
           <div class="container d-none mt-3 control-datos-nombre-proveedor">
-            <!-- <form autocomplete="off" th:object="${Proveedor}" th:action="@{/newProvider}" method="post">
+            <form autocomplete="off"  th:action="@{/newProvider}" method="post">
               <div class="mb-3">
                 <label for="exampleInputEmail1" class="form-label"
-                >Código del Proveedor</label
+                >Nombre del chofer</label
               >
               <input
                 type="text"
                 class="form-control"
                 id="nombreChoferInput"
                 required
-                th:field="*{codigo}"
                 value=""
               />
               <label for="exampleInputEmail1" class="form-label"
@@ -92,7 +96,6 @@
                   required
                   class="form-control"
                   id="nombreChoferInput"
-                  th:field="*{nombre}"
                   value=""
                 />
               <label for="exampleInputEmail1" class="form-label"
@@ -103,7 +106,6 @@
                   required
                   class="form-control"
                   id="nombreChoferInput"
-                  th:field="*{cantidadDeLeche}"
                   value=""
                 />
               
@@ -116,7 +118,6 @@
                 required
                 class="form-control"
                 id="municipiosAutocomplete"
-                th:field="*{municipio}"
                 value=""
               />
               </div>
@@ -124,7 +125,7 @@
                 </div>
               <button type="submit" class="btn btn-primary crearNuevo">Crear</button>
               <a href="javascript: window.location.reload()"  class="btn btn-secondary">Atras</a>
-            </form> -->
+            </form>
         </div>
       </div>
       <div th:replace="fragments/js:: js"></div>
@@ -133,6 +134,7 @@
     var DataTable = $('.tabla-vales').DataTable({
       dom: 'Bfrtip',
       "order": [],
+      "pageLength": 5,
        buttons: [
        {
                 extend: 'print',
@@ -169,9 +171,11 @@
 
       let form = document.querySelector(".control-datos-nombre-proveedor");
       let list = document.querySelector(".tabla-container");
+      let yearSelector = document.querySelector(".year");
       function addNew(){        
         form.classList.remove("d-none");
         list.classList.add("d-none");
+        yearSelector.classList.add("d-none");
       }
       let countries =  [
         "Antilla",
