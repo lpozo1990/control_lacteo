@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Control Lacteo</title>
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <!-- default header name is X-CSRF-TOKEN -->
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+    <div th:replace="fragments/css:: css"></div>
+  </head>
+  <style>
+    .autocomplete {
+  /*the container must be positioned relative:*/
+  position: relative;
+  display: inline-block;
+}
+    .autocomplete-items {
+  position: absolute;
+  border: 1px solid #d4d4d4;
+  border-bottom: none;
+  border-top: none;
+  z-index: 99;
+  /*position the autocomplete items to be the same width as the container:*/
+  top: 100%;
+  left: 0;
+  right: 0;
+}
+.autocomplete-items div {
+  padding: 10px;
+  cursor: pointer;
+  background-color: #fff;
+  border-bottom: 1px solid #d4d4d4;
+}
+.autocomplete-items div:hover {
+  /*when hovering an item:*/
+  background-color: #e9e9e9;
+}
+.autocomplete-active {
+  /*when navigating through the items using the arrow keys:*/
+  background-color: DodgerBlue !important;
+  color: #ffffff;
+}
+    body{
+        background-color: #f0ecec;
+    }
+  </style>
+  <body>
+    <div th:replace="fragments/svg:: svg"></div>
+      <div class="container">
+        <h1 class="m-2 text-center bg-light">Control Lácteo</h1>
+        <div class="container d-flex">
+            <div th:replace="fragments/sidemenu :: sidemenu"></div>
+            <div class="container">
+            <a name="" id="crearNuevoChocher" onclick="addNew()" class="btn btn-primary float-end mb-2" href="#" role="button">Crear Vale</a>
+          <div class="tabla-container">
+            <table class="table  tabla-vales">
+              <thead>
+                <tr>
+                  <th data-orderable="false" scope="col">Meses</th>
+                  <th scope="col">Cantidad de Leche</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr th:each="mes: ${meses}">
+                  <td th:text="${mes}" scope="row"></td>
+                  <td scope="row"><a href="#">12</a> </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="container d-none mt-3 control-datos-nombre-proveedor">
+            <!-- <form autocomplete="off" th:object="${Proveedor}" th:action="@{/newProvider}" method="post">
+              <div class="mb-3">
+                <label for="exampleInputEmail1" class="form-label"
+                >Código del Proveedor</label
+              >
+              <input
+                type="text"
+                class="form-control"
+                id="nombreChoferInput"
+                required
+                th:field="*{codigo}"
+                value=""
+              />
+              <label for="exampleInputEmail1" class="form-label"
+                  >Nombre del Chofer</label
+                >
+                <input
+                  type="text"
+                  required
+                  class="form-control"
+                  id="nombreChoferInput"
+                  th:field="*{nombre}"
+                  value=""
+                />
+              <label for="exampleInputEmail1" class="form-label"
+                  >Cantidad de leche</label
+                >
+                <input
+                  type="number"
+                  required
+                  class="form-control"
+                  id="nombreChoferInput"
+                  th:field="*{cantidadDeLeche}"
+                  value=""
+                />
+              
+              <div class="autocomplete w-100" >
+                <label for="exampleInputEmail1" class="form-label"
+                >Municipio</label
+              >
+                <input
+                type="text"
+                required
+                class="form-control"
+                id="municipiosAutocomplete"
+                th:field="*{municipio}"
+                value=""
+              />
+              </div>
+
+                </div>
+              <button type="submit" class="btn btn-primary crearNuevo">Crear</button>
+              <a href="javascript: window.location.reload()"  class="btn btn-secondary">Atras</a>
+            </form> -->
+        </div>
+      </div>
+      <div th:replace="fragments/js:: js"></div>
+      <script>
+        $(document).ready( function () {
+    var DataTable = $('.tabla-vales').DataTable({
+      dom: 'Bfrtip',
+      "order": [],
+       buttons: [
+       {
+                extend: 'print',
+                text:"Imprimir",
+                exportOptions: {
+                    columns: [ 0]
+                }
+            },
+            {
+                extend: 'excelHtml5',
+                text:"XLS",
+                exportOptions: {
+                    columns: ':visible'
+                }
+            },
+            {
+                extend: 'pdfHtml5',
+                exportOptions: {
+                    columns: [ 0, 1, 2]
+                }
+            },
+    ],
+      language: {
+            url: window.location.origin + '/js/es-AR.json'
+        }
+    });
+} );
+     var token = $("meta[name='_csrf']").attr("content");
+     var header = $("meta[name='_csrf_header']").attr("content");
+     async function deseaEliminar(id, nombre){
+      var url = "/proveedor/eliminar/" + id;
+      makeRequest(id, nombre, token, header, url, "DELETE", "/proveedores" )
+      }
+
+      let form = document.querySelector(".control-datos-nombre-proveedor");
+      let list = document.querySelector(".tabla-container");
+      function addNew(){        
+        form.classList.remove("d-none");
+        list.classList.add("d-none");
+      }
+      let countries =  [
+        "Antilla",
+        "Báguanos",
+        "Banes",
+        "Cacocum",
+        "Calixto García",
+        "Cueto",
+        "Frank País",
+        "Gibara",
+        "Holguín",
+        "Mayarí",
+        "Moa",
+        "Rafael Freyre",
+        "Sagua de Tánamo",
+        "Urbano Noris"
+];
+autocomplete(document.getElementById("municipiosAutocomplete"), countries);
+      </script>
+  </body>
+</html>
