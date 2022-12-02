@@ -57,9 +57,9 @@
             <div class="container">
             <a name="" id="crearNuevoVale" onclick="addNew()" class="btn btn-primary float-end mb-2" href="#" role="button">Crear Vale</a>
             <select name="year" class="year" id="year">
-              <option value="">Año</option>
-              <option value="2022">2022</option>
-              <option value="2021">2021</option>
+              <option th:each="year: ${years}"
+              th:value="${year}"
+              th:text="${year}">
             </select>
           <div class="tabla-container">
             <table class="table  tabla-vales">
@@ -70,16 +70,16 @@
                 </tr>
               </thead>
               <tbody>
-                <tr th:each="mes: ${meses}">
-                  <td th:text="${mes}" scope="row"></td>
-                  <td scope="row"><a href="#">12</a> </td>
+                <tr th:each="reg: ${registros}">
+                  <td th:text="${reg.mes}" scope="row"></td>
+                  <td th:text="${reg.cantidadDeLeche}" scope="row"></td>
                 </tr>
               </tbody>
             </table>
           </div>
 
           <div class="container d-none mt-3 control-datos-nombre-proveedor">
-            <form autocomplete="off"  th:action="@{/newProvider}" method="post">
+            <form autocomplete="off" id="formvale"  onsubmit="getData(event)" method="post">
               <div class="mb-3">
                 <div class="autocomplete w-100">
                   <label for="exampleInputEmail1" class="form-label"
@@ -89,6 +89,7 @@
                   type="text"
                   class="form-control"
                   id="nombreChoferInput"
+                  name="nombreChofer"
                   required
                   value=""
                 />
@@ -102,6 +103,7 @@
                   required
                   class="form-control"
                   id="fechaInput"
+                  name="fecha"
                   value=""
                 />
                 <div class="d-flex">
@@ -113,8 +115,9 @@
                     type="text"
                     required
                     class="form-control"
+                     name="ruta"
                     id="rutaInput"
-                    value=""
+                    value="44"
                   />
                   </div>
                   <div class="cantidadDeLeche py-2">
@@ -126,6 +129,7 @@
                     required
                     class="form-control"
                     id="cantidadSegunPesa"
+                    name="cantidadSegunPesa"
                     onchange="calculateDiference()"
                     value="0"
                   />
@@ -143,6 +147,7 @@
                     required
                     class="form-control"
                     id="numeroDeVale"
+                    name="numeroDeVale0"
                     value=""
                   />
                   </div>
@@ -155,7 +160,8 @@
                     required
                     class="form-control"
                     id="proovedorCodigo"
-                    value=""
+                    name="proovedorCodigo0"
+                    value="009"
                   />
                   </div>
                   <div class="cantidadLeche py-2">
@@ -167,6 +173,7 @@
                     required
                     class="form-control"
                     id="cantidadLeche"
+                    name="cantidadLeche0"
                     onchange="calculateDiference()"
                     value="0"
                   />
@@ -188,7 +195,6 @@
       <div th:replace="fragments/js:: js"></div>
       <script>
         $(document).ready( function () {
-
     var DataTable = $('.tabla-vales').DataTable({
       dom: 'Bfrtip',
       "order": [],
@@ -222,6 +228,18 @@
 } );
      var token = $("meta[name='_csrf']").attr("content");
      var header = $("meta[name='_csrf_header']").attr("content");
+
+     async function getData(event) {
+      event.preventDefault();
+      var mes = new Date($("#fechaInput").val()).toLocaleString("es-ES", {month:"long"});
+      var año = new Date($("#fechaInput").val()).getFullYear();
+      var data = { "mes": mes, "year": año, "cantidadDeLeche": +$("#cantidadLeche").val()};
+      console.log(data);
+      let url  =  "http://localhost:8080/newRegistry";
+      let redirectTo = "/vales";
+      makeRequestPost(token, header, url, data, redirectTo);
+      }
+
      async function deseaEliminar(id, nombre){
       var url = "/proveedor/eliminar/" + id;
       makeRequest(id, nombre, token, header, url, "DELETE", "/proveedores" )
@@ -242,7 +260,6 @@
         $(function(){
             $.getJSON("http://localhost:8080/driversByName", function(data) {
               nombres = data.map((i) => i[0] + " " +  i[1]);
-              console.log(nombres)
               autocomplete(document.getElementById("nombreChoferInput"), nombres);
         });
         })
