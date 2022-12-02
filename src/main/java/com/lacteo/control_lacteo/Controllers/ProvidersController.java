@@ -30,7 +30,7 @@ public class ProvidersController {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         model.addAttribute("username", username);
         model.addAttribute("proveedores", this.providersService.listAllProviders());
-        System.out.println(this.providersService.getByCat(1));
+        System.out.println(this.providersService.listAllProviders());
         model.addAttribute("Proveedor", new Proveedor());
         return "proveedores";
     }

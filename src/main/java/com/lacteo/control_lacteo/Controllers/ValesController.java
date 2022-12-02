@@ -4,6 +4,7 @@ import java.text.DateFormatSymbols;
 import java.util.Arrays;
 import java.util.Locale;
 
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,6 +16,8 @@ public class ValesController {
 
     @GetMapping("/vales")
     String GetVales(Model model) {
+        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        model.addAttribute("username", username);
         DateFormatSymbols spanish_dfs = new DateFormatSymbols(Locale.forLanguageTag("es-ES"));
         String[] months = spanish_dfs.getMonths();
         int startIndex = 0, endIndex = 12;

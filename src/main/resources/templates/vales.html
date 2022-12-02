@@ -41,6 +41,9 @@
   background-color: DodgerBlue !important;
   color: #ffffff;
 }
+.ruta{
+  margin-right: 2rem;
+}
     body{
         background-color: #f0ecec;
     }
@@ -89,25 +92,43 @@
                 value=""
               />
               <label for="exampleInputEmail1" class="form-label"
-                  >Nombre del Chofer</label
+                  >Fecha</label
                 >
                 <input
-                  type="text"
+                  type="date"
                   required
                   class="form-control"
                   id="nombreChoferInput"
                   value=""
                 />
-              <label for="exampleInputEmail1" class="form-label"
-                  >Cantidad de leche</label
-                >
-                <input
-                  type="number"
-                  required
-                  class="form-control"
-                  id="nombreChoferInput"
-                  value=""
-                />
+                <div class="d-flex">
+                  <div class="ruta py-2">
+                    <label for="exampleInputEmail1" class="form-label"
+                    >Ruta</label
+                  >
+                  <input
+                    type="text"
+                    required
+                    class="form-control"
+                    id="nombreChoferInput"
+                    value=""
+                  />
+                  </div>
+                  <div class="cantidadDeLeche py-2">
+                    <label for="exampleInputEmail1" class="form-label"
+                    >Cantidad de Leche segun Pesa</label
+                  >
+                  <input
+                    type="number"
+                    required
+                    class="form-control"
+                    id="nombreChoferInput"
+                    value=""
+                  />
+                  </div>
+            
+                </div>
+
               
               <div class="autocomplete w-100" >
                 <label for="exampleInputEmail1" class="form-label"
