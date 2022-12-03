@@ -49,5 +49,10 @@ public class ProvidersServiceImpl implements ProvidersService {
     public Iterable<Integer> getCodes() {
         return this.providerRepository.getAllCodes();
     }
+
+	@Override
+	public void incrementIfCodeIs(String codigo, Integer cantidadDeLeche) {
+        this.providerRepository.incrementIfCodeIs(codigo, cantidadDeLeche);
+	}
     
 }

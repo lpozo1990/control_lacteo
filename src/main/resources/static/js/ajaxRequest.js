@@ -31,7 +31,7 @@
         xhr.setRequestHeader(header, token);
    },
    success : function(data) { 
-       window.location =redirectTo;    
+      //  window.location =redirectTo;    
    }, 
    error : function(data) {
        console.log(data);
