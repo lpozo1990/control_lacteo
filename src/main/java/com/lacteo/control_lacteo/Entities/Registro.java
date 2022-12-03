@@ -13,7 +13,7 @@ import lombok.Data;
 @Table(name = "registros")
 @IdClass(RegistroID.class)
 public class Registro {
-
+    @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
     @Id

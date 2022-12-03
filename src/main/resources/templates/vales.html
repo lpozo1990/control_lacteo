@@ -235,13 +235,12 @@
       var mes = new Date($("#fechaInput").val()).toLocaleString("es-ES", {month:"long"});
       var año = new Date($("#fechaInput").val()).getFullYear();
       var data = { "mes": mes, "year": año, "cantidadDeLeche": +$("#cantidadLeche").val()};
-      console.log(data);
       let url  =  "/newRegistry";
       let redirectTo = "/vales";
       makeRequestPost(token, header, url, data, redirectTo);
+      window.location= redirectTo;
       }
      async function filterByYear(event) {
-      console.log(event.target.value)
       if(event.target.value == "") 
       {window.location= '/vales';} else {
       event.preventDefault();

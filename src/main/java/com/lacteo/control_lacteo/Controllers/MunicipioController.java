@@ -20,7 +20,7 @@ public class MunicipioController {
         this.municipioService = municipioService;
     }
 
-    @RequestMapping("/municipios")
+    @RequestMapping("/informes")
     String getMunicipios(Model model){
      String username = SecurityContextHolder.getContext().getAuthentication().getName();
      model.addAttribute("username", username);

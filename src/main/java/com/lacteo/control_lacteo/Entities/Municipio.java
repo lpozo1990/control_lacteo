@@ -16,5 +16,8 @@ public class Municipio {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private String nombre;
+    private Integer dia;
+    private Integer mes;
+    private Integer ano;
     private Integer cantidadDeLeche;    
 }
