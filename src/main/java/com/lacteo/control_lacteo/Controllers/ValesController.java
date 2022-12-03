@@ -24,9 +24,10 @@ public class ValesController {
     String GetVales(Model model) {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();
         model.addAttribute("username", username);
+        Integer defaultyear = this.regService.getAllYears().size() > 0 ? this.regService.getAllYears().get(0) : 2022;
         model.addAttribute("years",  this.regService.getAllYears());
-        System.out.println(this.regService.getAllRegForYear(2022));
-        model.addAttribute("registros",  this.regService.getAllRegForYear(2022));
+        System.out.println(this.regService.getAllRegForYear(defaultyear));
+        model.addAttribute("registros",  this.regService.getAllRegForYear(defaultyear));
         model.addAttribute("Registro", new Registro());
         return "vales";
     }
