@@ -81,7 +81,7 @@
 
           <div class="container d-none mt-3 control-datos-nombre-proveedor">
             <form autocomplete="off" id="formvale"  onsubmit="getData(event)" method="post">
-              <div class="mb-3">
+              <div class="mb-3 main-container">
                 <div class="autocomplete w-100">
                   <label for="exampleInputEmail1" class="form-label"
                   >Nombre del chofer</label
@@ -137,55 +137,56 @@
                   </div>
             
                 </div>
-
-                <div class="d-flex justify-content-between bg-light p-1">
-                  <div class="numeroDeVale py-2">
-                    <label for="exampleInputEmail1" class="form-label"
-                    >Numero de vale</label
-                  >
-                  <input
-                    type="text"
-                    required
-                    class="form-control"
-                    id="numeroDeVale"
-                    name="numeroDeVale0"
-                    value=""
-                  />
-                  </div>
-                  <div class="proovedorCodigo py-2">
-                    <div class="autocomplete">
-                    <label for="exampleInputEmail1" class="form-label"
-                    >Proovedor</label
-                  >
-                  <input
-                    type="number"
-                    required
-                    class="form-control"
-                    id="proovedorCodigo"
-                    name="proovedorCodigo0"
-                    value=""
-                  />
+                <div class="vales-container bg-light overflow-auto" style="height: 10rem;">
+                  <div class="d-flex justify-content-between  bg-light p-1">
+                    <div class="numeroDeVale py-2">
+                      <label for="exampleInputEmail1" class="form-label"
+                      >Numero de vale</label
+                    >
+                    <input
+                      type="text"
+                      required
+                      class="form-control"
+                      id="numeroDeVale"
+                      name="numeroDeVale0"
+                      value=""
+                    />
                     </div>
-                    
-                  </div>
-                  <div class="cantidadLeche py-2">
-                    <label for="exampleInputEmail1" class="form-label"
-                    >Cantidad de Leche</label
-                  >
-                  <input
-                    type="number"
-                    required
-                    class="form-control"
-                    id="cantidadLeche"
-                    name="cantidadLeche0"
-                    onchange="calculateDiference()"
-                    value="0"
-                  />
-                  </div>
-                  <div class="plusIcon">
-                    <img style="cursor: pointer;" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAABmJLR0QA/wD/AP+gvaeTAAAAiUlEQVRIie2WOw6AIAxAn8ZT+dkl3v8C4D1wMAwaEpHWgdiXsLW8toEAGH9kA3YgKq0AuBJxUJSm5e+SLiOOJdVVcHH1H0kekYgnYKlNlow65b6NBxodtYnF3C//WLHHnNnnQknHuZMvzrHrZOLPGAS5E4LC7T2G87+lTSgJcuj+uzywKjZhNMIB+71PTa5DlQgAAAAASUVORK5CYII=">
+                    <div class="proovedorCodigo py-2">
+                      <div class="autocomplete">
+                      <label for="exampleInputEmail1" class="form-label"
+                      >Proovedor</label
+                    >
+                    <input
+                      type="number"
+                      required
+                      class="form-control"
+                      id="proovedorCodigo"
+                      name="proovedorCodigo0"
+                      value=""
+                    />
+                      </div>
+                      
+                    </div>
+                    <div class="py-2">
+                      <label for="exampleInputEmail1" class="form-label"
+                      >Cantidad de Leche</label
+                    >
+                    <input
+                      type="number"
+                      required
+                      class="form-control cantidadLeche"
+                      name="cantidadLeche0"
+                      onchange="calculateDiference()"
+                      value="0"
+                    />
+                    </div>
+                    <div onclick="addNewContainer()" class="plusIcon">
+                      <img style="cursor: pointer;" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAABmJLR0QA/wD/AP+gvaeTAAAAiUlEQVRIie2WOw6AIAxAn8ZT+dkl3v8C4D1wMAwaEpHWgdiXsLW8toEAGH9kA3YgKq0AuBJxUJSm5e+SLiOOJdVVcHH1H0kekYgnYKlNlow65b6NBxodtYnF3C//WLHHnNnnQknHuZMvzrHrZOLPGAS5E4LC7T2G87+lTSgJcuj+uzywKjZhNMIB+71PTa5DlQgAAAAASUVORK5CYII=">
+                    </div>
                   </div>
                 </div>
+
                 <div class="totals bg-light d-flex">
                   <p style="margin-right: 2rem;">Total: <span class="total">0</span></p>
                   <p>Diferencia: <span class="diferencia">0</span></p>
@@ -239,20 +240,25 @@
         $(function(){
             $.getJSON("/driversByName", function(data) {
               nombres = data.map((i) => i[0] + " " +  i[1]);
-              console.log(nombres);
               autocomplete(document.getElementById("nombreChoferInput"), nombres);
         })});
-        $(function(){
-            $.getJSON("/providersCodes", function(data) {
-              codigos = data.map((i) => i.toString())
-              autocomplete(provcode, codigos);
-        });
-        })
-
+        autocompleteStart()
         form.classList.remove("d-none");
         list.classList.add("d-none");
         yearSelector.classList.add("d-none");
         crearNuevoVale.classList.add("d-none");
+      }
+
+      function autocompleteStart(){
+        $(function(){
+            $.getJSON("/providersCodes", function(data) {
+              codigos = data.map((i) => i.toString())
+              let inputsProvedores = document.querySelectorAll("#proovedorCodigo");
+              for (let i = 0; i < inputsProvedores.length; i++) {
+                  autocomplete(inputsProvedores[i], codigos);
+              }
+        });
+        })
       }
      async function getData(event) {
       event.preventDefault();
@@ -285,16 +291,60 @@
       }
       }
 
-
+      let id = 1;
+      function addNewContainer(){
+        let newRow = `
+        <div id='items-${id}' class="d-flex justify-content-between bg-light p-1">
+                  <div class="numeroDeVale py-2">
+                    <label for="exampleInputEmail1" class="form-label">Numero de vale</label>
+                  <input type="text" required="" class="form-control" id="numeroDeVale" name="numeroDeVale0" value="">
+                  </div>
+                  <div class="proovedorCodigo py-2">
+                    <div class="autocomplete">
+                    <label for="exampleInputEmail1" class="form-label">Proovedor</label>
+                  <input type="number" required="" class="form-control" id="proovedorCodigo" name="proovedorCodigo0" value="">
+                    </div>
+                    
+                  </div>
+                  <div class="py-2">
+                    <label for="exampleInputEmail1" class="form-label">Cantidad de Leche</label>
+                  <input type="number" required="" class="form-control cantidadLeche"  name="cantidadLeche0" onchange="calculateDiference()" value="0">
+                  </div>
+                  <div>
+                  <div onclick="addNewContainer()" class="plusIcon">
+                    <img style="cursor: pointer;" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAABmJLR0QA/wD/AP+gvaeTAAAAiUlEQVRIie2WOw6AIAxAn8ZT+dkl3v8C4D1wMAwaEpHWgdiXsLW8toEAGH9kA3YgKq0AuBJxUJSm5e+SLiOOJdVVcHH1H0kekYgnYKlNlow65b6NBxodtYnF3C//WLHHnNnnQknHuZMvzrHrZOLPGAS5E4LC7T2G87+lTSgJcuj+uzywKjZhNMIB+71PTa5DlQgAAAAASUVORK5CYII=">
+                  </div>
+                  <div onclick="removeContainer(this)" class="plusIcon">
+                    <img style="cursor: pointer;" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAABmJLR0QA/wD/AP+gvaeTAAAAcklEQVRIie2WwQnAIAwArx2rXaDS/Rcw7mFffSiCQeKjNgf5ac4EDAHnj9xAArJRCBA0YjGUvhFrydYQZ83rBihc+yRJFxe7eD1xi/rzHwM5zkaeAk3FI13p3vHJ5WIXrylOEzyiORSw3bsicBkW4XyEB74YSpmdXCsqAAAAAElFTkSuQmCC">
+                  </div>
+                  </div>
+                </div>`
+        id++;
+        $(".vales-container").append(newRow);
+        autocompleteStart();
+      }
+      function removeContainer(event) {
+        id--;
+        event.parentElement.parentElement.remove();
+        calculateDiference();
+      }
       let form = document.querySelector(".control-datos-nombre-proveedor");
       let list = document.querySelector(".tabla-container");
       let diferencia = document.querySelector(".diferencia");
       let yearSelector = document.querySelector(".year");
       let crearNuevoVale = document.querySelector("#crearNuevoVale");
-      let cantidadLeche = document.querySelector("#cantidadLeche");
       let cantidadSegunPesa = document.querySelector("#cantidadSegunPesa");
+      
       function calculateDiference(){
-        diferencia.textContent = cantidadSegunPesa.value - cantidadLeche.value;  
+        let cantidadLeches = document.querySelectorAll(".cantidadLeche");
+        let total = document.querySelector(".total");
+        let sum = 0;
+        for (let i = 0; i < cantidadLeches.length; i++) {
+          console.log(typeof cantidadLeches[i]);
+          sum += +cantidadLeches[i].value; 
+        }
+        diferencia.textContent = cantidadSegunPesa.value - sum;  
+        total.textContent = sum;
       }
      
 
