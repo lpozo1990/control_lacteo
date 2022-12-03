@@ -17,8 +17,7 @@ public class NewRegistryController {
         this.regService = regService;
     }
     @PostMapping("newRegistry")
-    Registro createRegistry(@RequestBody Registro registro) {
-        Registro res =  this.regService.saveRegistro(registro);
-        return res;    
+    void createRegistry(@RequestBody Registro registro) {
+         this.regService.saveRegistro(registro);
     }
 }

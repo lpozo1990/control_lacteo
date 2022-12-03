@@ -17,8 +17,8 @@ public class NewRegistryServiceImpl implements NewRegistryService {
     }
 
     @Override
-    public Registro saveRegistro(Registro registro) {
-        return this.regRepo.save(registro);
+    public void saveRegistro(Registro registro) {
+        this.regRepo.saveNew(registro.getId(), registro.getMes(), registro.getYear(), registro.getCantidadDeLeche());
     }
 
     @Override
