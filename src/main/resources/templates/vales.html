@@ -232,9 +232,34 @@
 } );
      var token = $("meta[name='_csrf']").attr("content");
      var header = $("meta[name='_csrf_header']").attr("content");
+     let nombres = [];
+      let codigos = [];
+      let provcode = document.getElementById("proovedorCodigo")
+      function addNew(){        
+        $(function(){
+            $.getJSON("/driversByName", function(data) {
+              nombres = data.map((i) => i[0] + " " +  i[1]);
+              console.log(nombres);
+              autocomplete(document.getElementById("nombreChoferInput"), nombres);
+        })});
+        $(function(){
+            $.getJSON("/providersCodes", function(data) {
+              codigos = data.map((i) => i.toString())
+              autocomplete(provcode, codigos);
+        });
+        })
 
+        form.classList.remove("d-none");
+        list.classList.add("d-none");
+        yearSelector.classList.add("d-none");
+        crearNuevoVale.classList.add("d-none");
+      }
      async function getData(event) {
       event.preventDefault();
+      if(!codigos.includes(provcode.value)){
+        alert("Código inválido");
+        return;
+      }
       var mes = new Date($("#fechaInput").val()).toLocaleString("es-ES", {month:"long"});
       var año = new Date($("#fechaInput").val()).getFullYear();
       var data = { "mes": mes, "year": año, "cantidadDeLeche": +$("#cantidadLeche").val()};
@@ -252,10 +277,6 @@
       }
       }
 
-     async function deseaEliminar(id, nombre){
-      var url = "/proveedor/eliminar/" + id;
-      makeRequest(id, nombre, token, header, url, "DELETE", "/proveedores" )
-      }
 
       let form = document.querySelector(".control-datos-nombre-proveedor");
       let list = document.querySelector(".tabla-container");
@@ -267,27 +288,7 @@
       function calculateDiference(){
         diferencia.textContent = cantidadSegunPesa.value - cantidadLeche.value;  
       }
-      let nombres = [];
-      let codigos = [];
-      function addNew(){        
-        $(function(){
-            $.getJSON("/driversByName", function(data) {
-              nombres = data.map((i) => i[0] + " " +  i[1]);
-              console.log(nombres);
-              autocomplete(document.getElementById("nombreChoferInput"), nombres);
-        })});
-        $(function(){
-            $.getJSON("/providersCodes", function(data) {
-              codigos = data.map((i) => i.toString())
-              autocomplete(document.getElementById("proovedorCodigo"), codigos);
-        });
-        })
-
-        form.classList.remove("d-none");
-        list.classList.add("d-none");
-        yearSelector.classList.add("d-none");
-        crearNuevoVale.classList.add("d-none");
-      }
+     
 
 
       </script>
