@@ -262,15 +262,17 @@
       }
      async function getData(event) {
       event.preventDefault();
-      if(!codigos.includes(provcode.value)){
-        alert("Código inválido");
-        return;
+      let codigos = document.querySelectorAll("#proovedorCodigo");
+      let cantidadesDeLeches = document.querySelectorAll(".cantidadLeche");
+      for (let i = 0; i < codigos.length; i++) {
+        let codigo = codigos[i].value;
+        let leche = cantidadesDeLeches[i].value;
+        makeRequestPost(token, header, `/incrementInProvider`, {"codigo": codigo, "cantidadDeLeche": leche}, "/vales");
+        makeRequestPost(token, header, `/incrementInMunicipio`, {"codigo": codigo, "cantidadDeLeche": leche}, "/vales");
       }
-      makeRequestPost(token, header, `/incrementInProvider`, {"codigo": provcode.value, "cantidadDeLeche": +$("#cantidadLeche").val()}, "/vales");
-      makeRequestPost(token, header, `/incrementInMunicipio`, {"codigo": provcode.value, "cantidadDeLeche": +$("#cantidadLeche").val()}, "/vales");
       var mes = new Date($("#fechaInput").val()).toLocaleString("es-ES", {month:"long"});
       var año = new Date($("#fechaInput").val()).getFullYear();
-      var data = { "mes": mes, "year": año, "cantidadDeLeche": +$("#cantidadLeche").val()};
+      var data = { "mes": mes, "year": año, "cantidadDeLeche": +document.querySelector(".total").textContent};
       let url  =  "/newRegistry";
       let redirectTo = "/vales";
       makeRequestPost(token, header, url, data, redirectTo);
