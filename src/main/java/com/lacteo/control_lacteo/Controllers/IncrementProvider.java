@@ -7,6 +7,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.lacteo.control_lacteo.Entities.Registro;
+import com.lacteo.control_lacteo.Service.NewRegistryService;
 import com.lacteo.control_lacteo.Service.ProvidersService;
 
 
@@ -15,6 +17,13 @@ import com.lacteo.control_lacteo.Service.ProvidersService;
 public class IncrementProvider {
 
     private ProvidersService providersService;
+
+    private NewRegistryService regService;
+
+    @Autowired
+    public void setChoferService(NewRegistryService regService) {
+        this.regService = regService;
+    }
 
     @Autowired
     public void setChoferService(ProvidersService providersService) {
@@ -34,5 +43,11 @@ public class IncrementProvider {
     String codigo = json.get("codigo");
     Integer cantidadDeLeche = Integer.parseInt(json.get("cantidadDeLeche"));
      this.providersService.incrementLecheInmunicipio(codigo, cantidadDeLeche);   
+    }
+
+
+    @PostMapping("/filterByYear")
+    Iterable<Registro> getFromCurrentYear(@RequestBody Map<String, Integer> json) {
+        return this.regService.getAllRegForYear(json.get("year"));
     }
 }

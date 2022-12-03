@@ -31,7 +31,28 @@
         xhr.setRequestHeader(header, token);
    },
    success : function(data) { 
-      //  window.location =redirectTo;    
+     return Promise.resolve(data);
+   }, 
+   error : function(data) {
+       console.log(data);
+   }
+     })
+
+ }
+
+   async function getNewYears(token, header, url, data, years){
+     return $.ajax({
+       url: url,
+       contentType: "application/json",
+       data: JSON.stringify(data),
+       dataType: 'json',
+       type : 'POST',
+   beforeSend:function(xhr){
+        xhr.setRequestHeader(header, token);
+   },
+   success : function(data) { 
+     years = data;
+     return years;
    }, 
    error : function(data) {
        console.log(data);

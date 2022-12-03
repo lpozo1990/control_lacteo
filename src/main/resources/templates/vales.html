@@ -271,11 +271,17 @@
       window.location= redirectTo;
       }
      async function filterByYear(event) {
+      console.log(event.target.value )
       if(event.target.value == "") 
       {window.location= '/vales';} else {
       event.preventDefault();
-      let url  =  `/filterByYear/${event.target.value}`;
-      window.location = url;
+      let url  =  `/filterByYear`;
+      let yearT = [];
+      let data =  await getNewYears(token, header, url, {"year":+event.target.value}, yearT);
+      console.log(data.map(i => [i["mes"], i["cantidadDeLeche"]]));
+      $('.tabla-vales').DataTable().clear();
+      $('.tabla-vales').DataTable().rows.add(data.map(i => [i["mes"], i["cantidadDeLeche"]]));
+      $('.tabla-vales').DataTable().draw(false);
       }
       }
 
