@@ -44,5 +44,10 @@ public class ProvidersServiceImpl implements ProvidersService {
     public void incrementInMunicipio(String municipio, Integer cantidadDeLeche) {
         this.providerRepository.incrementInMunicipio(municipio, cantidadDeLeche);
     }
+
+    @Override
+    public Iterable<Integer> getCodes() {
+        return this.providerRepository.getAllCodes();
+    }
     
 }

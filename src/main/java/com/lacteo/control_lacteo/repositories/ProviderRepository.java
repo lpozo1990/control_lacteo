@@ -15,4 +15,7 @@ public interface ProviderRepository extends CrudRepository<Proveedor, Integer> {
     @Query("update Municipio m  set m.cantidadDeLeche=m.cantidadDeLeche + :cantidad where m.nombre=:municipio")
     void incrementInMunicipio(@Param("municipio")String municipio, @Param("cantidad")Integer cantidad);
 
+    @Query(value="SELECT codigo FROM proveedores", nativeQuery = true)
+    Iterable<Integer> getAllCodes();
+
 }

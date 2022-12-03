@@ -153,6 +153,7 @@
                   />
                   </div>
                   <div class="proovedorCodigo py-2">
+                    <div class="autocomplete">
                     <label for="exampleInputEmail1" class="form-label"
                     >Proovedor</label
                   >
@@ -162,8 +163,10 @@
                     class="form-control"
                     id="proovedorCodigo"
                     name="proovedorCodigo0"
-                    value="009"
+                    value=""
                   />
+                    </div>
+                    
                   </div>
                   <div class="cantidadLeche py-2">
                     <label for="exampleInputEmail1" class="form-label"
@@ -265,11 +268,18 @@
         diferencia.textContent = cantidadSegunPesa.value - cantidadLeche.value;  
       }
       let nombres = [];
+      let codigos = [];
       function addNew(){        
         $(function(){
-            $.getJSON("http://localhost:8080/driversByName", function(data) {
+            $.getJSON("/driversByName", function(data) {
               nombres = data.map((i) => i[0] + " " +  i[1]);
+              console.log(nombres);
               autocomplete(document.getElementById("nombreChoferInput"), nombres);
+        })});
+        $(function(){
+            $.getJSON("/providersCodes", function(data) {
+              codigos = data.map((i) => i.toString())
+              autocomplete(document.getElementById("proovedorCodigo"), codigos);
         });
         })
 
