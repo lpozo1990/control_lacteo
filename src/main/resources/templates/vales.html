@@ -158,7 +158,7 @@
                       >Proovedor</label
                     >
                     <input
-                      type="number"
+                      type="text"
                       required
                       class="form-control"
                       id="proovedorCodigo"
@@ -209,20 +209,22 @@
                 extend: 'print',
                 text:"Imprimir",
                 exportOptions: {
-                    columns: [ 0]
+                    columns: [0,1]
                 }
             },
             {
                 extend: 'excelHtml5',
                 text:"XLS",
+                title:"Vales",
                 exportOptions: {
-                    columns: ':visible'
+                    columns: [0,1]
                 }
             },
             {
                 extend: 'pdfHtml5',
+                title:"Vales",
                 exportOptions: {
-                    columns: [ 0, 1, 2]
+                    columns: [ 0, 1]
                 }
             },
     ],
@@ -304,7 +306,7 @@
                   <div class="proovedorCodigo py-2">
                     <div class="autocomplete">
                     <label for="exampleInputEmail1" class="form-label">Proovedor</label>
-                  <input type="number" required="" class="form-control" id="proovedorCodigo" name="proovedorCodigo0" value="">
+                  <input type="text" required="" class="form-control" id="proovedorCodigo" name="proovedorCodigo0" value="">
                     </div>
                     
                   </div>

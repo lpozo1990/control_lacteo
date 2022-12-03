@@ -89,7 +89,7 @@
                 value=""
               />
               <label for="exampleInputEmail1" class="form-label"
-                  >Nombre del Chofer</label
+                  >Nombre del Proovedor</label
                 >
                 <input
                   type="text"
@@ -131,18 +131,20 @@
                 extend: 'print',
                 text:"Imprimir",
                 exportOptions: {
-                    columns: [ 0]
+                    columns: [0, 1, 2]
                 }
             },
             {
                 extend: 'excelHtml5',
                 text:"XLS",
+                title:"Proovedores",
                 exportOptions: {
-                    columns: ':visible'
+                    columns: [0, 1, 2]
                 }
             },
             {
                 extend: 'pdfHtml5',
+                title:"Proovedores",
                 exportOptions: {
                     columns: [ 0, 1, 2]
                 }

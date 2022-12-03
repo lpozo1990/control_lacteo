@@ -7,6 +7,8 @@ public interface MunicipioService {
     Iterable<Municipio> listAllMunicipios();
 
    Municipio getMunicipioById(Integer id);
+   
+   Municipio findByNombre(String nombre);
 
    Municipio saveMunicipio(Municipio municipio);
 

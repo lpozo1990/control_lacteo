@@ -35,6 +35,11 @@ public class MunicipioServiceImpl implements MunicipioService {
         this.municipioRepository.deleteById(id);
     }
 
+	@Override
+	public Municipio findByNombre(String nombre) {
+		return this.municipioRepository.findByNombre(nombre);
+	}
+
 }
 
 

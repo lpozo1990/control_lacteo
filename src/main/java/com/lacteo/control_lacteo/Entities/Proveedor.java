@@ -13,7 +13,7 @@ public class Proveedor {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-    private Integer codigo;
+    private String codigo;
     private String nombre;
     private Integer cantidadDeLeche;
     private String municipio;

@@ -52,7 +52,6 @@
         <div class="container d-flex">
             <div th:replace="fragments/sidemenu :: sidemenu"></div>
             <div class="container">
-            <a name="" id="crearNuevoMunicipio" onclick="addNew()" class="btn btn-primary mb-3 float-end" href="#" role="button">Crear Municipio</a>
             <div class="tabla-container">
             <table class="table  tabla-municipios">
             <thead>
@@ -115,20 +114,22 @@
                 extend: 'print',
                 text:"Imprimir",
                 exportOptions: {
-                    columns: [ 0]
+                    columns: [0, 1]
                 }
             },
             {
                 extend: 'excelHtml5',
                 text:"XLS",
+                title:"Informes",
                 exportOptions: {
-                    columns: ':visible'
+                    columns: [0, 1]
                 }
             },
             {
                 extend: 'pdfHtml5',
+                title:"Informes",
                 exportOptions: {
-                    columns: [ 0, 1, 2]
+                    columns: [ 0, 1]
                 }
             },
     ],
@@ -139,7 +140,7 @@
 } );
      async function deseaEliminar(id, nombre){
       var url = "/municipio/eliminar/" + id;
-      makeRequest(id, nombre, token, header, url, "DELETE", "/municipios" )
+      makeRequest(id, nombre, token, header, url, "DELETE", "/informes" )
       }
 
       let form = document.querySelector(".control-datos-nombre-municipio");
