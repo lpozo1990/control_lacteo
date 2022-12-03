@@ -19,7 +19,9 @@ public interface  ProvidersService {
 
     void incrementIfCodeIs(String codigo, Integer cantidadDeLeche);
 
-    void incrementInMunicipio(String municipio, Integer cantidadDeLeche);
+    void incrementInMunicipio(String codigo, Integer cantidadDeLeche);
+
+    void incrementLecheInmunicipio(String municipio, Integer cantidadDeLeche);
 
 
 }

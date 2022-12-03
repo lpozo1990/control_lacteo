@@ -27,4 +27,12 @@ public class IncrementProvider {
     Integer cantidadDeLeche = Integer.parseInt(json.get("cantidadDeLeche"));
      this.providersService.incrementIfCodeIs(codigo, cantidadDeLeche);   
     }
+
+    @PostMapping("/incrementInMunicipio")
+    void incrementInMunicipio(@RequestBody Map<String, String> json){
+    System.out.println(json);
+    String codigo = json.get("codigo");
+    Integer cantidadDeLeche = Integer.parseInt(json.get("cantidadDeLeche"));
+     this.providersService.incrementLecheInmunicipio(codigo, cantidadDeLeche);   
+    }
 }

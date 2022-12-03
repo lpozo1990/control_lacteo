@@ -23,4 +23,9 @@ public interface ProviderRepository extends CrudRepository<Proveedor, Integer> {
     @Query(value="UPDATE proveedores SET cantidad_de_leche = cantidad_de_leche + ?2 WHERE codigo = ?1 ;", nativeQuery = true)
     void incrementIfCodeIs(String codigo, Integer cantidadDeLeche);
 
+    @Modifying
+    @Transactional
+    @Query(value="UPDATE municipios SET cantidad_de_leche = cantidad_de_leche + ?2 WHERE nombre = (SELECT municipio from proveedores WHERE codigo = ?1);", nativeQuery = true)
+    void incrementLecheInmunicipio(String codigo, Integer cantidadDeLeche);
+
 }

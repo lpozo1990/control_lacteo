@@ -261,6 +261,7 @@
         return;
       }
       makeRequestPost(token, header, `/incrementInProvider`, {"codigo": provcode.value, "cantidadDeLeche": +$("#cantidadLeche").val()}, "/vales");
+      makeRequestPost(token, header, `/incrementInMunicipio`, {"codigo": provcode.value, "cantidadDeLeche": +$("#cantidadLeche").val()}, "/vales");
       var mes = new Date($("#fechaInput").val()).toLocaleString("es-ES", {month:"long"});
       var año = new Date($("#fechaInput").val()).getFullYear();
       var data = { "mes": mes, "year": año, "cantidadDeLeche": +$("#cantidadLeche").val()};
