@@ -67,7 +67,7 @@
               <thead>
                 <tr>
                   <th data-orderable="false" scope="col">Meses</th>
-                  <th scope="col">Cantidad de Leche</th>
+                  <th scope="col">Cantidad de leche</th>
                 </tr>
               </thead>
               <tbody>
@@ -123,14 +123,14 @@
                   </div>
                   <div class="cantidadDeLeche py-2">
                     <label for="exampleInputEmail1" class="form-label"
-                    >Cantidad de Leche segun Pesa</label
+                    >Cantidad de leche según Pesa</label
                   >
                   <input
                     type="number"
                     required
                     class="form-control"
-                    id="cantidadSegunPesa"
-                    name="cantidadSegunPesa"
+                    id="cantidadsegúnPesa"
+                    name="cantidadsegúnPesa"
                     onchange="calculateDiference()"
                     value="0"
                   />
@@ -141,7 +141,7 @@
                   <div class="d-flex justify-content-between  bg-light p-1">
                     <div class="numeroDeVale py-2">
                       <label for="exampleInputEmail1" class="form-label"
-                      >Numero de vale</label
+                      >Número de vale</label
                     >
                     <input
                       type="text"
@@ -152,17 +152,17 @@
                       value=""
                     />
                     </div>
-                    <div class="proovedorCodigo py-2">
+                    <div class="ProveedorCodigo py-2">
                       <div class="autocomplete">
                       <label for="exampleInputEmail1" class="form-label"
-                      >Proovedor</label
+                      >Proveedor</label
                     >
                     <input
                       type="text"
                       required
                       class="form-control"
-                      id="proovedorCodigo"
-                      name="proovedorCodigo0"
+                      id="ProveedorCodigo"
+                      name="ProveedorCodigo0"
                       value=""
                     />
                       </div>
@@ -170,7 +170,7 @@
                     </div>
                     <div class="py-2">
                       <label for="exampleInputEmail1" class="form-label"
-                      >Cantidad de Leche</label
+                      >Cantidad de leche</label
                     >
                     <input
                       type="number"
@@ -193,7 +193,7 @@
                 </div>
                 </div>
               <button type="submit" class="btn btn-primary crearNuevo">Crear</button>
-              <a href="javascript: window.location.reload()"  class="btn btn-secondary">Atras</a>
+              <a href="javascript: window.location.reload()"  class="btn btn-secondary">Atrás</a>
             </form>
         </div>
       </div>
@@ -237,7 +237,7 @@
      var header = $("meta[name='_csrf_header']").attr("content");
      let nombres = [];
       let codigos = [];
-      let provcode = document.getElementById("proovedorCodigo")
+      let provcode = document.getElementById("ProveedorCodigo")
       function addNew(){        
         $(function(){
             $.getJSON("/driversByName", function(data) {
@@ -255,7 +255,7 @@
         $(function(){
             $.getJSON("/providersCodes", function(data) {
               codigos = data.map((i) => i.toString())
-              let inputsProvedores = document.querySelectorAll("#proovedorCodigo");
+              let inputsProvedores = document.querySelectorAll("#ProveedorCodigo");
               for (let i = 0; i < inputsProvedores.length; i++) {
                   autocomplete(inputsProvedores[i], codigos);
               }
@@ -264,7 +264,7 @@
       }
      async function getData(event) {
       event.preventDefault();
-      let codigos = document.querySelectorAll("#proovedorCodigo");
+      let codigos = document.querySelectorAll("#ProveedorCodigo");
       let cantidadesDeLeches = document.querySelectorAll(".cantidadLeche");
       for (let i = 0; i < codigos.length; i++) {
         let codigo = codigos[i].value;
@@ -300,13 +300,13 @@
         let newRow = `
         <div id='items-${id}' class="d-flex justify-content-between bg-light p-1">
                   <div class="numeroDeVale py-2">
-                    <label for="exampleInputEmail1" class="form-label">Numero de vale</label>
+                    <label for="exampleInputEmail1" class="form-label">Número de vale</label>
                   <input type="text" required="" class="form-control" id="numeroDeVale" name="numeroDeVale0" value="">
                   </div>
-                  <div class="proovedorCodigo py-2">
+                  <div class="ProveedorCodigo py-2">
                     <div class="autocomplete">
-                    <label for="exampleInputEmail1" class="form-label">Proovedor</label>
-                  <input type="text" required="" class="form-control" id="proovedorCodigo" name="proovedorCodigo0" value="">
+                    <label for="exampleInputEmail1" class="form-label">Proveedor</label>
+                  <input type="text" required="" class="form-control" id="ProveedorCodigo" name="ProveedorCodigo0" value="">
                     </div>
                     
                   </div>
@@ -337,7 +337,7 @@
       let diferencia = document.querySelector(".diferencia");
       let yearSelector = document.querySelector(".year");
       let crearNuevoVale = document.querySelector("#crearNuevoVale");
-      let cantidadSegunPesa = document.querySelector("#cantidadSegunPesa");
+      let cantidadsegúnPesa = document.querySelector("#cantidadsegúnPesa");
       
       function calculateDiference(){
         let cantidadLeches = document.querySelectorAll(".cantidadLeche");
@@ -347,7 +347,7 @@
           console.log(typeof cantidadLeches[i]);
           sum += +cantidadLeches[i].value; 
         }
-        diferencia.textContent = cantidadSegunPesa.value - sum;  
+        diferencia.textContent = cantidadsegúnPesa.value - sum;  
         total.textContent = sum;
       }
      
