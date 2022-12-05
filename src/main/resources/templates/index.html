@@ -37,7 +37,7 @@
                 <td th:text="${chofer.nombre}" scope="row"><a href="#"></a> </td>
                 <td th:text="${chofer.apellidos}" scope="row"><a href="#"></a> </td>
                 <td>
-                  <a  th:onclick="editar([[${chofer.nombre}]], [[${chofer.apellidos}]])"  href="#">Editar</a>
+                  <a  th:onclick="editar([[${chofer.nombre}]], [[${chofer.apellidos}]], [[${chofer.id}]])"  href="#">Editar</a>
                   <a  th:onclick="deseaEliminar([[${chofer.id}]], [[${chofer.nombre}]])"  href="#">Eliminar</a>
                 </td>
               </tr>
@@ -109,10 +109,13 @@
 } );
 
 
-      function editar(nombre, apellidos) {
+      function editar(nombre, apellidos, id) {
         addNew();
         document.querySelector("#nombreChoferInput").value = nombre;
         document.querySelector("#apellidosChoferInput").value = apellidos;
+        document.querySelector(".crearNuevo").textContent = 'Actualizar'
+        let formulario = document.querySelector("div.container.control-datos-nombre-chofer > form")
+        formulario.action = `/actualizarChofer/${+id}`
       }
 
       async function deseaEliminar(id, nombre){
