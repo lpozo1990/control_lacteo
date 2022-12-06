@@ -308,6 +308,7 @@
         verVales.classList.add("d-none");
         yearSelector.classList.add("d-none");
         crearNuevoVale.classList.add("d-none");
+        containerTableVales.classList.add("d-none");
       }
 
       function autocompleteStart(){
@@ -324,19 +325,39 @@
      async function getData(event) {
       event.preventDefault();
       let codigos = document.querySelectorAll("#ProveedorCodigo");
+      let numerosDeVale = document.querySelectorAll("#numeroDeVale");
       let cantidadesDeLeches = document.querySelectorAll(".cantidadLeche");
+      var vales = [];
       for (let i = 0; i < codigos.length; i++) {
         let codigo = codigos[i].value;
         let leche = cantidadesDeLeches[i].value;
+        let numeroDeVale =  numerosDeVale[i].value;
+        vales.push(
+          {
+            "numero_de_vale": numeroDeVale,
+            "codigo_proveedor": codigo,
+            "cantidad_de_leche": leche
+          }
+        )
         makeRequestPost(token, header, `/incrementInProvider`, {"codigo": codigo, "cantidadDeLeche": leche}, "/vales");
         makeRequestPost(token, header, `/incrementInMunicipio`, {"codigo": codigo, "cantidadDeLeche": leche}, "/vales");
       }
       var mes = new Date($("#fechaInput").val()).toLocaleString("es-ES", {month:"long"});
       var año = new Date($("#fechaInput").val()).getFullYear();
       var data = { "mes": mes, "year": año, "cantidadDeLeche": +document.querySelector(".total").textContent};
+      var total = +document.querySelector(".total").textContent;
+      console.log(total);
+      var datosEntrada = { 
+        "nombreDelChofer": document.getElementById("nombreChoferInput").value, 
+        "ruta": document.getElementById("rutaInput").value, 
+        "fecha": $("#fechaInput").val(), 
+        "cantidadLeche": total,
+        "vales": vales
+      };
       let url  =  "/newRegistry";
       let redirectTo = "/vales";
       makeRequestPost(token, header, url, data, redirectTo);
+      makeRequestPost(token, header, "/newEntry", datosEntrada, redirectTo);
       window.location= redirectTo;
       }
      async function filterByYear(event) {
