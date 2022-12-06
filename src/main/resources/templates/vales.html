@@ -62,6 +62,7 @@
               th:value="${year}"
               th:text="${year}">
             </select>
+            <button class="ver-vales btn btn-outline-dark float-end" style="margin-right: 1rem;" onclick="mostrarVales()">Mostrar vales</button>
           <div class="tabla-container">
             <table class="table  tabla-vales">
               <thead>
@@ -74,6 +75,31 @@
                 <tr th:each="reg: ${registros}">
                   <td th:text="${reg.mes}" scope="row"></td>
                   <td th:text="${reg.cantidadDeLeche}" scope="row"></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="d-none tabla-informe-vales-container">
+            <table class="table  tabla-historial-vales">
+              <thead>
+                <tr>
+                  <th data-orderable="false" scope="col">Nombre del chofer</th>
+                  <th scope="col">Fecha</th>
+                  <th scope="col">Ruta</th>
+                  <th scope="col">Cantidad de leche</th>
+                  <th scope="col">Acciones</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr th:each="reg: ${registros}">
+                  <td th:text="${reg.mes}" scope="row"></td>
+                  <td th:text="${reg.mes}" scope="row"></td>
+                  <td th:text="${reg.cantidadDeLeche}" scope="row"></td>
+                  <td th:text="${reg.cantidadDeLeche}" scope="row"></td>
+                  <td>
+                    <a  th:onclick="deseaEliminar([[${reg.id}]], [[${reg.mes}]])"  href="#">Editar</a>
+                    <a  th:onclick="deseaEliminar([[${reg.id}]], [[${reg.mes}]])"  href="#">Eliminar</a>
+                  </td>
                 </tr>
               </tbody>
             </table>
@@ -232,7 +258,39 @@
             url: window.location.origin + '/js/es-AR.json'
         }
     });
-} );
+    var DataTableHistorialVales = $('.tabla-historial-vales').DataTable({
+      dom: 'Bfrtip',
+      "order": [],
+      "pageLength": 5,
+       buttons: [
+       {
+                extend: 'print',
+                text:"Imprimir",
+                exportOptions: {
+                    columns: [0,1]
+                }
+            },
+            {
+                extend: 'excelHtml5',
+                text:"XLS",
+                title:"Vales",
+                exportOptions: {
+                    columns: [0,1]
+                }
+            },
+            {
+                extend: 'pdfHtml5',
+                title:"Vales",
+                exportOptions: {
+                    columns: [ 0, 1]
+                }
+            },
+    ],
+      language: {
+            url: window.location.origin + '/js/es-AR.json'
+        }
+    });
+});
      var token = $("meta[name='_csrf']").attr("content");
      var header = $("meta[name='_csrf_header']").attr("content");
      let nombres = [];
@@ -247,6 +305,7 @@
         autocompleteStart()
         form.classList.remove("d-none");
         list.classList.add("d-none");
+        verVales.classList.add("d-none");
         yearSelector.classList.add("d-none");
         crearNuevoVale.classList.add("d-none");
       }
@@ -333,7 +392,9 @@
         calculateDiference();
       }
       let form = document.querySelector(".control-datos-nombre-proveedor");
+      let verVales = document.querySelector(".ver-vales");
       let list = document.querySelector(".tabla-container");
+      let containerTableVales = document.querySelector(".tabla-informe-vales-container");
       let diferencia = document.querySelector(".diferencia");
       let yearSelector = document.querySelector(".year");
       let crearNuevoVale = document.querySelector("#crearNuevoVale");
@@ -351,6 +412,11 @@
         total.textContent = sum;
       }
      
+      function mostrarVales() {
+        list.classList.toggle("d-none");
+        containerTableVales.classList.toggle("d-none");
+        verVales.textContent = !containerTableVales.classList.contains("d-none") ?  "Mostrar meses" : "Mostrar vales";
+      }
 
 
       </script>
