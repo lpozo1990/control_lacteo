@@ -18,10 +18,13 @@ public interface  ProvidersService {
     void deleteProveedor(Integer id);
 
     void incrementIfCodeIs(String codigo, Integer cantidadDeLeche);
+    void decrementIfCodeIs(String codigo, Integer cantidadDeLeche);
 
     void incrementInMunicipio(String codigo, Integer cantidadDeLeche);
 
     void incrementLecheInmunicipio(String municipio, Integer cantidadDeLeche);
+
+    void decrementLecheInmunicipio(String municipio, Integer cantidadDeLeche);
 
 
 }

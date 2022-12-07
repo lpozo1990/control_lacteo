@@ -29,12 +29,20 @@ public class IncrementProvider {
     public void setChoferService(ProvidersService providersService) {
         this.providersService = providersService;
     }
+
     @PostMapping("/incrementInProvider")
     void incrementProvider(@RequestBody Map<String, String> json){
     System.out.println(json);
     String codigo = json.get("codigo");
     Integer cantidadDeLeche = Integer.parseInt(json.get("cantidadDeLeche"));
      this.providersService.incrementIfCodeIs(codigo, cantidadDeLeche);   
+    }
+    @PostMapping("/decrementInProvider")
+    void decrementProvider(@RequestBody Map<String, String> json){
+    System.out.println(json);
+    String codigo = json.get("codigo");
+    Integer cantidadDeLeche = Integer.parseInt(json.get("cantidadDeLeche"));
+     this.providersService.decrementIfCodeIs(codigo, cantidadDeLeche);   
     }
 
     @PostMapping("/incrementInMunicipio")
@@ -43,6 +51,14 @@ public class IncrementProvider {
     String codigo = json.get("codigo");
     Integer cantidadDeLeche = Integer.parseInt(json.get("cantidadDeLeche"));
      this.providersService.incrementLecheInmunicipio(codigo, cantidadDeLeche);   
+    }
+
+    @PostMapping("/decrementInMunicipio")
+    void decrementInMunicipio(@RequestBody Map<String, String> json){
+    System.out.println(json);
+    String codigo = json.get("codigo");
+    Integer cantidadDeLeche = Integer.parseInt(json.get("cantidadDeLeche"));
+     this.providersService.decrementLecheInmunicipio(codigo, cantidadDeLeche);   
     }
 
 

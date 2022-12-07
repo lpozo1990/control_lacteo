@@ -30,4 +30,15 @@ public class NewRegistryServiceImpl implements NewRegistryService {
 	public List<Integer> getAllYears() {
         return this.regRepo.getAllYears();
 	}
+
+	@Override
+	public void incrementInRegistry(String mes, Integer year,Integer cantidadDeLeche) {
+		this.regRepo.incrementInRegistry(mes, year, cantidadDeLeche);
+		
+	}
+	@Override
+	public void decrementInRegistry(String mes, Integer year,Integer cantidadDeLeche) {
+		this.regRepo.decrementInRegistry(mes, year, cantidadDeLeche);
+		
+	}
 }

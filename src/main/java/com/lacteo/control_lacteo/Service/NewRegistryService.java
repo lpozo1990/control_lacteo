@@ -8,4 +8,6 @@ public interface NewRegistryService {
     void saveRegistro(Registro registro);
     Iterable<Registro> getAllRegForYear(Integer year);
     List<Integer> getAllYears();
+    void incrementInRegistry(String mes, Integer year, Integer cantidadDeLeche);
+    void decrementInRegistry(String mes, Integer year, Integer cantidadDeLeche);
 }

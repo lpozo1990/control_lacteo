@@ -58,5 +58,16 @@ public class ProvidersServiceImpl implements ProvidersService {
 	public void incrementLecheInmunicipio(String codigo, Integer cantidadDeLeche) {
         this.providerRepository.incrementLecheInmunicipio(codigo, cantidadDeLeche);
 	}
+
+	@Override
+	public void decrementLecheInmunicipio(String municipio, Integer cantidadDeLeche) {
+		this.providerRepository.decrementLecheInmunicipio(municipio, cantidadDeLeche);
+		
+	}
+	@Override
+	public void decrementIfCodeIs(String municipio, Integer cantidadDeLeche) {
+		this.providerRepository.decrementIfCodeIs(municipio, cantidadDeLeche);
+		
+	}
     
 }

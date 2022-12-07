@@ -466,6 +466,7 @@
           formatDate()
        } );
        let idInUse = 0;
+       var totalInicial = 0;
        function editarVale(id, nombre, fecha, ruta, cantidadLeche){
           addNew()
           idInUse = id;
@@ -477,8 +478,8 @@
           document.getElementById("fechaInput").valueAsDate = new Date(formatedDate);
           document.getElementById("rutaInput").value = ruta;
           $.getJSON(`/getValesForId/${id}`, function(data) {
-              document.querySelectorAll("#ProveedorCodigo")[0].value =  data[0][0];
-              document.querySelectorAll("#numeroDeVale")[0].value =  data[0][1];
+            document.querySelectorAll("#numeroDeVale")[0].value =  data[0][0];
+              document.querySelectorAll("#ProveedorCodigo")[0].value =  data[0][1];
               document.querySelectorAll(".cantidadLeche")[0].value = data[0][2];
             for (let i = 0; i < data.length -1; i++) {
               addNewContainer()
@@ -491,6 +492,7 @@
             }
           }
           calculateDiference()
+          totalInicial = document.querySelector(".total").textContent;
           let formVale = document.querySelector("#formvale");
           console.log(formVale);
           formVale.setAttribute("onsubmit", "updateVale(event)");
@@ -529,7 +531,25 @@
           "codigo_proveedor": codigo,
           "cantidad_de_leche": +leche
         }
-        console.log(codigo);
+        console.log(total.textContent ,  totalInicial);
+        var datosEntrada = { 
+        "nombreDelChofer": document.getElementById("nombreChoferInput").value, 
+        "ruta": document.getElementById("rutaInput").value, 
+        "fecha": $("#fechaInput").val(), 
+        "cantidadLeche": total,
+      };
+      var mes = new Date($("#fechaInput").val()).toLocaleString("es-ES", {month:"long"});
+      var año = new Date($("#fechaInput").val()).getFullYear();
+      var data = { "mes": mes, "year": año, "cantidadDeLeche": +total.textContent};
+      if(total.textContent > totalInicial) {
+          makeRequestPost(token, header, `/incrementInProvider`, {"codigo": codigo, "cantidadDeLeche": +leche}, "/vales");
+          makeRequestPost(token, header, `/incrementInMunicipio`, {"codigo": codigo, "cantidadDeLeche": +leche}, "/vales");
+          makeRequestPost(token, header, `/incrementInRegistry`, data, "/vales");
+        } else {
+          makeRequestPost(token, header, `/decrementInProvider`, {"codigo": codigo, "cantidadDeLeche": +leche}, "/vales");
+          makeRequestPost(token, header, `/decrementInMunicipio`, {"codigo": codigo, "cantidadDeLeche": +leche}, "/vales");
+          makeRequestPost(token, header, `/decrementInRegistry`, data, "/vales");
+        }
           makeRequestPost(token, header, `/updateVale`, entry, "/");
         }
       window.location.reload();

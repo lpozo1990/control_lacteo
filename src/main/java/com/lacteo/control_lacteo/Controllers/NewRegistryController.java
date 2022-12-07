@@ -47,6 +47,20 @@ public class NewRegistryController {
          this.regService.saveRegistro(registro);
     }
 
+    @PostMapping("incrementInRegistry")
+    void incrementInRegistry(@RequestBody Registro registro) {
+        System.out.println(registro);
+         this.regService.incrementInRegistry(registro.getMes(), registro.getYear(), registro.getCantidadDeLeche());
+    }
+
+    @PostMapping("decrementInRegistry")
+    void decrementInRegistry(@RequestBody Registro registro) {
+        System.out.println(registro);
+         this.regService.decrementInRegistry(registro.getMes(), registro.getYear(), registro.getCantidadDeLeche());
+    }
+
+
+
     @GetMapping("getValesForId/{id}")
     List<Object> getValesForId(@PathVariable Integer id){
         System.out.println(id);

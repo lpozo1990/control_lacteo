@@ -68,7 +68,10 @@
                   <td th:text="${proveedor.codigo}" scope="row"><a href="#"></a> </td>
                   <td th:text="${proveedor.nombre}" scope="row"><a href="#"></a> </td>
                   <td th:text="${proveedor.cantidadDeLeche}" scope="row"><a href="#"></a> </td>
-                  <td><a  th:onclick="deseaEliminar([[${proveedor.id}]], [[${proveedor.nombre}]])"  href="#">Eliminar</a></td>
+                  <td>
+                    <a  th:onclick="editarProveedor([[${proveedor.id}]], [[${proveedor.nombre}]], [[${proveedor.codigo}]], [[${proveedor.municipio}]])"  href="#">Editar</a>
+                    <a  th:onclick="deseaEliminar([[${proveedor.id}]], [[${proveedor.nombre}]])"  href="#">Eliminar</a>
+                  </td>
                 </tr>
               </tbody>
             </table>
@@ -83,7 +86,7 @@
               <input
                 type="text"
                 class="form-control"
-                id="nombreChoferInput"
+                id="codigoProveedor"
                 required
                 th:field="*{codigo}"
                 value=""
@@ -95,7 +98,7 @@
                   type="text"
                   required
                   class="form-control"
-                  id="nombreChoferInput"
+                  id="nombreProveedor"
                   th:field="*{nombre}"
                   value=""
                 />
@@ -107,7 +110,7 @@
                 <input
                 type="text"
                 required
-                class="form-control"
+                class="form-control municipio"
                 id="municipiosAutocomplete"
                 th:field="*{municipio}"
                 value=""
@@ -160,6 +163,17 @@
      async function deseaEliminar(id, nombre){
       var url = "/proveedor/eliminar/" + id;
       makeRequest(id, nombre, token, header, url, "DELETE", "/proveedores" )
+      }
+
+      function editarProveedor(id, nombre, codigo, municipio) {
+        addNew();
+        document.querySelector("#codigoProveedor").value = codigo;
+        document.querySelector("#crearNuevoChocher").classList.add("d-none");
+        document.querySelector(".crearNuevo").textContent = "Actualizar";
+        document.querySelector("#nombreProveedor").value = nombre;
+        document.querySelector("#municipiosAutocomplete").value = municipio;
+        let formulario = document.querySelector("div.container.control-datos-nombre-proveedor > form")
+        formulario.action = `actualizarProveedor/${+id}`
       }
 
       let form = document.querySelector(".control-datos-nombre-proveedor");

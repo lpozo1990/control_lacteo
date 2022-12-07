@@ -21,4 +21,17 @@ public interface RegistroRepository extends CrudRepository<Registro, Integer> {
     @Query(value="INSERT INTO registros  (id, mes, year, cantidad_de_leche) VALUES (?1, ?2, ?3, ?4)  ON DUPLICATE KEY UPDATE cantidad_de_leche = cantidad_de_leche + ?4", nativeQuery = true)
     void saveNew(Integer id, String mes, Integer year, Integer cantidadDeLeche);
 
+
+    @Modifying
+    @Transactional
+    @Query(value="UPDATE registros SET cantidad_de_leche = cantidad_de_leche + ?3 WHERE mes = ?1 AND year = ?2 ", nativeQuery = true)
+    void incrementInRegistry(String mes, Integer year, Integer cantidadDeLeche);
+
+    @Modifying
+    @Transactional
+    @Query(value="UPDATE registros SET cantidad_de_leche = cantidad_de_leche - ?3 WHERE mes = ?1 AND year = ?2 ", nativeQuery = true)
+    void decrementInRegistry(String mes, Integer year, Integer cantidadDeLeche);
+    
+
+
 }
