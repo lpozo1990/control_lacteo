@@ -7,6 +7,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import com.lacteo.control_lacteo.Entities.Registro;
 import com.lacteo.control_lacteo.Service.NewRegistryService;
+import com.lacteo.control_lacteo.repositories.EntradaRepository;
 
 //function to get slice of a primitive array in Java   
 
@@ -14,10 +15,17 @@ import com.lacteo.control_lacteo.Service.NewRegistryService;
 public class ValesController {
 
     private NewRegistryService regService;
+    private EntradaRepository entRepo;
+
 
     @Autowired
     public void setChoferService(NewRegistryService regService) {
         this.regService = regService;
+    }
+
+    @Autowired
+    public void setEntradaRepository(EntradaRepository entRepo) {
+        this.entRepo = entRepo;
     }
 
     @GetMapping("/vales")
@@ -28,6 +36,7 @@ public class ValesController {
         model.addAttribute("years",  this.regService.getAllYears());
         System.out.println(this.regService.getAllRegForYear(defaultyear));
         model.addAttribute("registros",  this.regService.getAllRegForYear(defaultyear));
+        model.addAttribute("listaVales",  this.entRepo.findAll());
         model.addAttribute("Registro", new Registro());
         return "vales";
     }

@@ -91,14 +91,14 @@
                 </tr>
               </thead>
               <tbody>
-                <tr th:each="reg: ${registros}">
-                  <td th:text="${reg.mes}" scope="row"></td>
-                  <td th:text="${reg.mes}" scope="row"></td>
-                  <td th:text="${reg.cantidadDeLeche}" scope="row"></td>
-                  <td th:text="${reg.cantidadDeLeche}" scope="row"></td>
+                <tr th:each="reg: ${listaVales}">
+                  <td th:text="${reg.nombreDelChofer}" scope="row"></td>
+                  <td th:text="${reg.fecha}" class="celdaFecha" scope="row"></td>
+                  <td th:text="${reg.ruta}" scope="row"></td>
+                  <td th:text="${reg.cantidadLeche}" scope="row"></td>
                   <td>
-                    <a  th:onclick="deseaEliminar([[${reg.id}]], [[${reg.mes}]])"  href="#">Editar</a>
-                    <a  th:onclick="deseaEliminar([[${reg.id}]], [[${reg.mes}]])"  href="#">Eliminar</a>
+                    <a  th:onclick="editarVale([[${reg.id}]], [[${reg.nombreDelChofer}]], [[${reg.fecha}]], [[${reg.ruta}]], [[${reg.cantidadLeche}]])"  href="#">Editar</a>
+                    <a  th:onclick="deseaEliminar([[${reg.id}]])"  href="#">Eliminar</a>
                   </td>
                 </tr>
               </tbody>
@@ -295,13 +295,35 @@
      var header = $("meta[name='_csrf_header']").attr("content");
      let nombres = [];
       let codigos = [];
-      let provcode = document.getElementById("ProveedorCodigo")
+      let provcode = document.getElementById("ProveedorCodigo");
+      async function deseaEliminar(id){
+        let confirmation = window.confirm(`Desea eliminar la entrada?`);
+        if(confirmation) {
+          $.ajax({
+            url: "deleteEntry/" + id,
+            type : 'DELETE',
+        data: token,
+        beforeSend:function(xhr){
+             xhr.setRequestHeader(header, token);
+        },
+        success : function(data) { 
+            window.location.reload()    
+        }, 
+        error : function(data) {
+            console.log(data);
+        }
+          })
+        }
+
+      }
+      
       function addNew(){        
         $(function(){
             $.getJSON("/driversByName", function(data) {
               nombres = data.map((i) => i[0] + " " +  i[1]);
               autocomplete(document.getElementById("nombreChoferInput"), nombres);
-        })});
+        })
+      });
         autocompleteStart()
         form.classList.remove("d-none");
         list.classList.add("d-none");
@@ -358,8 +380,10 @@
       let redirectTo = "/vales";
       makeRequestPost(token, header, url, data, redirectTo);
       makeRequestPost(token, header, "/newEntry", datosEntrada, redirectTo);
-      window.location= redirectTo;
+      window.location.reload();
       }
+
+
      async function filterByYear(event) {
       console.log(event.target.value )
       if(event.target.value == "") 
@@ -432,11 +456,47 @@
         diferencia.textContent = cantidadsegúnPesa.value - sum;  
         total.textContent = sum;
       }
-     
+      
+      function formatDate(){
+        document.querySelectorAll(".celdaFecha").forEach(
+          (el) => {el.textContent =  new Date(el.textContent).toLocaleDateString();}
+        )
+      }
+        $('.tabla-historial-vales').on( 'page.dt', function () {
+          formatDate()
+       } );
+
+       function editarVale(id, nombre, fecha, ruta, cantidadLeche){
+          addNew()
+          let formatedDate = new Date(fecha).toLocaleDateString();
+          document.querySelector(".crearNuevo").textContent = 'Actualizar';
+          document.getElementById("nombreChoferInput").value = nombre;
+          document.getElementById("fechaInput").valueAsDate = new Date(formatedDate);
+          document.getElementById("rutaInput").value = ruta;
+          $.getJSON(`/getValesForId/${id}`, function(data) {
+              document.querySelectorAll("#ProveedorCodigo")[0].value =  data[0][0];
+              document.querySelectorAll("#numeroDeVale")[0].value =  data[0][1];
+              document.querySelectorAll(".cantidadLeche")[0].value = data[0][2];
+            for (let i = 0; i < data.length -1; i++) {
+              addNewContainer()
+            }
+            if(data.length > 1){
+              for (let i = 1; i < data.length; i++) {
+              document.querySelectorAll("#ProveedorCodigo")[i].value =  data[i][0];
+              document.querySelectorAll("#numeroDeVale")[i].value =  data[i][1];
+              document.querySelectorAll(".cantidadLeche")[i].value = data[i][2];
+            }
+          }
+          calculateDiference()
+ 
+        })
+       }
+      
       function mostrarVales() {
         list.classList.toggle("d-none");
         containerTableVales.classList.toggle("d-none");
         verVales.textContent = !containerTableVales.classList.contains("d-none") ?  "Mostrar meses" : "Mostrar vales";
+        formatDate()
       }
 
 

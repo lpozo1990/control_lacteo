@@ -61,14 +61,14 @@
 
  }
    async function makeRequestGet(token, header, url, redirectTo){
-     $.ajax({
+     return $.ajax({
        url: url,
        type : 'GET',
    beforeSend:function(xhr){
         xhr.setRequestHeader(header, token);
    },
    success : function(data) { 
-      //  window.location =redirectTo;    
+      return data;   
    }, 
    error : function(data) {
        console.log(data);

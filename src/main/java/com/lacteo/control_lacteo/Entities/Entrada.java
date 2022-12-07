@@ -12,6 +12,8 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 import lombok.Data;
 
 
@@ -27,7 +29,9 @@ public class Entrada {
     private List<Vale> vales;
 
     private String nombreDelChofer;
+    @DateTimeFormat(pattern = "dd-MM-yyyy")
     private Date fecha;
+    
     private String ruta;
     private Integer cantidadLeche;
     
