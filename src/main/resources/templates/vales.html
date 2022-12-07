@@ -207,7 +207,7 @@
                       value="0"
                     />
                     </div>
-                    <div onclick="addNewContainer()" class="plusIcon">
+                    <div onclick="addNewContainer(true)" class="plusIcon">
                       <img style="cursor: pointer;" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAABmJLR0QA/wD/AP+gvaeTAAAAiUlEQVRIie2WOw6AIAxAn8ZT+dkl3v8C4D1wMAwaEpHWgdiXsLW8toEAGH9kA3YgKq0AuBJxUJSm5e+SLiOOJdVVcHH1H0kekYgnYKlNlow65b6NBxodtYnF3C//WLHHnNnnQknHuZMvzrHrZOLPGAS5E4LC7T2G87+lTSgJcuj+uzywKjZhNMIB+71PTa5DlQgAAAAASUVORK5CYII=">
                     </div>
                   </div>
@@ -267,7 +267,7 @@
                 extend: 'print',
                 text:"Imprimir",
                 exportOptions: {
-                    columns: [0,1]
+                    columns: [0,1, 2, 3]
                 }
             },
             {
@@ -275,14 +275,14 @@
                 text:"XLS",
                 title:"Vales",
                 exportOptions: {
-                    columns: [0,1]
+                    columns: [0,1, 2, 3]
                 }
             },
             {
                 extend: 'pdfHtml5',
                 title:"Vales",
                 exportOptions: {
-                    columns: [ 0, 1]
+                    columns: [ 0, 1, 2, 3]
                 }
             },
     ],
@@ -400,7 +400,20 @@
       }
 
       let id = 1;
-      function addNewContainer(){
+      function addNewContainer(showIcons){
+        let plusAndMinusIcons = "";
+        if(showIcons){
+          plusAndMinusIcons = `
+          <div>        
+            <div onclick="addNewContainer()" class="plusIcon">
+                    <img style="cursor: pointer;" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAABmJLR0QA/wD/AP+gvaeTAAAAiUlEQVRIie2WOw6AIAxAn8ZT+dkl3v8C4D1wMAwaEpHWgdiXsLW8toEAGH9kA3YgKq0AuBJxUJSm5e+SLiOOJdVVcHH1H0kekYgnYKlNlow65b6NBxodtYnF3C//WLHHnNnnQknHuZMvzrHrZOLPGAS5E4LC7T2G87+lTSgJcuj+uzywKjZhNMIB+71PTa5DlQgAAAAASUVORK5CYII=">
+                  </div>
+                  <div onclick="removeContainer(this)" class="plusIcon">
+                    <img style="cursor: pointer;" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAABmJLR0QA/wD/AP+gvaeTAAAAcklEQVRIie2WwQnAIAwArx2rXaDS/Rcw7mFffSiCQeKjNgf5ac4EDAHnj9xAArJRCBA0YjGUvhFrydYQZ83rBihc+yRJFxe7eD1xi/rzHwM5zkaeAk3FI13p3vHJ5WIXrylOEzyiORSw3bsicBkW4XyEB74YSpmdXCsqAAAAAElFTkSuQmCC">
+                  </div>
+            </div>`
+
+        } 
         let newRow = `
         <div id='items-${id}' class="d-flex justify-content-between bg-light p-1">
                   <div class="numeroDeVale py-2">
@@ -418,15 +431,9 @@
                     <label for="exampleInputEmail1" class="form-label">Cantidad de Leche</label>
                   <input type="number" required="" class="form-control cantidadLeche"  name="cantidadLeche0" onchange="calculateDiference()" value="0">
                   </div>
-                  <div>
-                  <div onclick="addNewContainer()" class="plusIcon">
-                    <img style="cursor: pointer;" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAABmJLR0QA/wD/AP+gvaeTAAAAiUlEQVRIie2WOw6AIAxAn8ZT+dkl3v8C4D1wMAwaEpHWgdiXsLW8toEAGH9kA3YgKq0AuBJxUJSm5e+SLiOOJdVVcHH1H0kekYgnYKlNlow65b6NBxodtYnF3C//WLHHnNnnQknHuZMvzrHrZOLPGAS5E4LC7T2G87+lTSgJcuj+uzywKjZhNMIB+71PTa5DlQgAAAAASUVORK5CYII=">
-                  </div>
-                  <div onclick="removeContainer(this)" class="plusIcon">
-                    <img style="cursor: pointer;" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAABmJLR0QA/wD/AP+gvaeTAAAAcklEQVRIie2WwQnAIAwArx2rXaDS/Rcw7mFffSiCQeKjNgf5ac4EDAHnj9xAArJRCBA0YjGUvhFrydYQZ83rBihc+yRJFxe7eD1xi/rzHwM5zkaeAk3FI13p3vHJ5WIXrylOEzyiORSw3bsicBkW4XyEB74YSpmdXCsqAAAAAElFTkSuQmCC">
-                  </div>
-                  </div>
+                    ${plusAndMinusIcons}  
                 </div>`
+                console.log(plusAndMinusIcons)
         id++;
         $(".vales-container").append(newRow);
         autocompleteStart();
@@ -482,7 +489,7 @@
               document.querySelectorAll("#ProveedorCodigo")[0].value =  data[0][1];
               document.querySelectorAll(".cantidadLeche")[0].value = data[0][2];
             for (let i = 0; i < data.length -1; i++) {
-              addNewContainer()
+              addNewContainer(false)
             }
             if(data.length > 1){
               for (let i = 1; i < data.length; i++) {
