@@ -465,9 +465,10 @@
         $('.tabla-historial-vales').on( 'page.dt', function () {
           formatDate()
        } );
-
+       let idInUse = 0;
        function editarVale(id, nombre, fecha, ruta, cantidadLeche){
           addNew()
+          idInUse = id;
           let formatedDate = new Date(fecha).toLocaleDateString();
           document.querySelector(".crearNuevo").textContent = 'Actualizar';
           document.getElementById("nombreChoferInput").value = nombre;
@@ -488,9 +489,25 @@
             }
           }
           calculateDiference()
- 
+          let formVale = document.querySelector("#formvale");
+          console.log(formVale);
+          formVale.setAttribute("onsubmit", "updateVale(event)");
         })
        }
+
+       function updateVale(event){
+        event.preventDefault();
+        let total = document.querySelector(".total");
+        var datosEntrada = {
+        "id": idInUse,
+        "nombreDelChofer": document.getElementById("nombreChoferInput").value, 
+        "ruta": document.getElementById("rutaInput").value, 
+        "fecha": new Date($("#fechaInput").val()), 
+        "cantidadLeche": +total.textContent,
+      };
+      console.log(datosEntrada)
+      makeRequestPost(token, header, "/updateEntrada", datosEntrada, "/");
+      }
       
       function mostrarVales() {
         list.classList.toggle("d-none");

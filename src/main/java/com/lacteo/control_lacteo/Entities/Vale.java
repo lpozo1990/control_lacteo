@@ -9,9 +9,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import com.vladmihalcea.hibernate.type.json.JsonType;
-
-import org.hibernate.annotations.TypeDef;
 
 import lombok.Data;
 
@@ -19,7 +16,6 @@ import lombok.Data;
 @Data
 @Entity
 @Table(name = "Vales")
-@TypeDef(name = "json", typeClass = JsonType.class)
 public class Vale implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
