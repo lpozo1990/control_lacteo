@@ -469,6 +469,8 @@
        function editarVale(id, nombre, fecha, ruta, cantidadLeche){
           addNew()
           idInUse = id;
+          let plusIcon= document.querySelector(".plusIcon");
+          plusIcon.classList.add("d-none");
           let formatedDate = new Date(fecha).toLocaleDateString();
           document.querySelector(".crearNuevo").textContent = 'Actualizar';
           document.getElementById("nombreChoferInput").value = nombre;
@@ -505,8 +507,32 @@
         "fecha": new Date($("#fechaInput").val()), 
         "cantidadLeche": +total.textContent,
       };
-      console.log(datosEntrada)
+
+        var datosEntrada = {
+        "id": idInUse,
+        "nombreDelChofer": document.getElementById("nombreChoferInput").value, 
+        "ruta": document.getElementById("rutaInput").value, 
+        "fecha": new Date($("#fechaInput").val()), 
+        "cantidadLeche": +total.textContent,
+      };
       makeRequestPost(token, header, "/updateEntrada", datosEntrada, "/");
+      let codigos = document.querySelectorAll("#ProveedorCodigo");
+      let numerosDeVale = document.querySelectorAll("#numeroDeVale");
+      let cantidadesDeLeches = document.querySelectorAll(".cantidadLeche");
+      for (let i = 0; i < codigos.length; i++) {
+        let codigo = codigos[i].value;
+        let leche = cantidadesDeLeches[i].value;
+        let numeroDeVale =  numerosDeVale[i].value;
+        let entry =   {
+          "id": idInUse,
+          "numero_de_vale": numeroDeVale,
+          "codigo_proveedor": codigo,
+          "cantidad_de_leche": +leche
+        }
+        console.log(codigo);
+          makeRequestPost(token, header, `/updateVale`, entry, "/");
+        }
+      window.location.reload();
       }
       
       function mostrarVales() {
