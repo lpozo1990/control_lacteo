@@ -484,18 +484,23 @@
           document.getElementById("nombreChoferInput").value = nombre;
           document.getElementById("fechaInput").valueAsDate = new Date(formatedDate);
           document.getElementById("rutaInput").value = ruta;
+
           $.getJSON(`/getValesForId/${id}`, function(data) {
-            document.querySelectorAll("#numeroDeVale")[0].value =  data[0][0];
-              document.querySelectorAll("#ProveedorCodigo")[0].value =  data[0][1];
-              document.querySelectorAll(".cantidadLeche")[0].value = data[0][2];
             for (let i = 0; i < data.length -1; i++) {
               addNewContainer(false)
             }
-            if(data.length > 1){
-              for (let i = 1; i < data.length; i++) {
-              document.querySelectorAll("#ProveedorCodigo")[i].value =  data[i][0];
-              document.querySelectorAll("#numeroDeVale")[i].value =  data[i][1];
-              document.querySelectorAll(".cantidadLeche")[i].value = data[i][2];
+            let codigosProvedores = document.querySelectorAll("#ProveedorCodigo")
+            let numerosDeVale = document.querySelectorAll("#numeroDeVale")
+            let cantidadesDeLeche = document.querySelectorAll(".cantidadLeche")
+              codigosProvedores[0].value =  data[0][1];
+              numerosDeVale[0].value =  data[0][0];
+              cantidadesDeLeche[0].value = data[0][2];
+              if(data.length > 1){
+                for (let i = 1; i < data.length; i++) {
+                  codigosProvedores[i].value =  data[i][1];
+                  numerosDeVale[i].value =  data[i][0];
+                  cantidadesDeLeche[i].value = data[i][2];
+                  console.log(data[i][0], data[i][1], data[i][2])
             }
           }
           calculateDiference()
@@ -528,12 +533,15 @@
       let codigos = document.querySelectorAll("#ProveedorCodigo");
       let numerosDeVale = document.querySelectorAll("#numeroDeVale");
       let cantidadesDeLeches = document.querySelectorAll(".cantidadLeche");
-      for (let i = 0; i < codigos.length; i++) {
+      let ids = [];
+          $.getJSON(`/getValesIds`, function(data) {
+            ids = data;
+            for (let i = 0; i < codigos.length; i++) {
         let codigo = codigos[i].value;
         let leche = cantidadesDeLeches[i].value;
         let numeroDeVale =  numerosDeVale[i].value;
         let entry =   {
-          "id": idInUse,
+          "id": ids[i],
           "numero_de_vale": numeroDeVale,
           "codigo_proveedor": codigo,
           "cantidad_de_leche": +leche
@@ -559,6 +567,8 @@
         }
           makeRequestPost(token, header, `/updateVale`, entry, "/");
         }
+          })
+ 
       window.location.reload();
       }
       

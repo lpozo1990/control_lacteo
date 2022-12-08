@@ -66,6 +66,10 @@ public class NewRegistryController {
         System.out.println(id);
         return this.valeRepo.getValesForId(id);
     }
+    @GetMapping("getValesIds")
+    List<Integer> getValesIds(){
+        return this.valeRepo.getValesIds();
+    }
 
     @PostMapping("newEntry")
     void createEntry(@RequestBody Entrada entrada) {

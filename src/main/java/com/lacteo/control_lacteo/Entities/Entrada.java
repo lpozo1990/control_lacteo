@@ -19,13 +19,14 @@ import lombok.Data;
 
 @Data
 @Entity
+
 @Table(name = "Entradas")
 public class Entrada {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @OneToMany(mappedBy="entrada")
+    @OneToMany(mappedBy="entrada", orphanRemoval = true)
     private List<Vale> vales;
 
     private String nombreDelChofer;
