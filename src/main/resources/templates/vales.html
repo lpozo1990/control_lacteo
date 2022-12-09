@@ -1,409 +1,380 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Control Lacteo</title>
-    <meta name="_csrf" th:content="${_csrf.token}"/>
-    <!-- default header name is X-CSRF-TOKEN -->
-    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
-    <div th:replace="fragments/css:: css"></div>
-  </head>
-  <style>
-    .autocomplete {
-  /*the container must be positioned relative:*/
-  position: relative;
-  display: inline-block;
+
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Control Lacteo</title>
+<meta name="_csrf" th:content="${_csrf.token}" />
+<!-- default header name is X-CSRF-TOKEN -->
+<meta name="_csrf_header" th:content="${_csrf.headerName}" />
+<div th:replace="fragments/css:: css"></div>
+</head>
+<style>
+.autocomplete {
+	/*the container must be positioned relative:*/
+	position: relative;
+	display: inline-block;
 }
-    .autocomplete-items {
-  position: absolute;
-  border: 1px solid #d4d4d4;
-  border-bottom: none;
-  border-top: none;
-  z-index: 99;
-  /*position the autocomplete items to be the same width as the container:*/
-  top: 100%;
-  left: 0;
-  right: 0;
+
+.autocomplete-items {
+	position: absolute;
+	border: 1px solid #d4d4d4;
+	border-bottom: none;
+	border-top: none;
+	z-index: 99;
+	/*position the autocomplete items to be the same width as the container:*/
+	top: 100%;
+	left: 0;
+	right: 0;
 }
+
 .autocomplete-items div {
-  padding: 10px;
-  cursor: pointer;
-  background-color: #fff;
-  border-bottom: 1px solid #d4d4d4;
+	padding: 10px;
+	cursor: pointer;
+	background-color: #fff;
+	border-bottom: 1px solid #d4d4d4;
 }
+
 .autocomplete-items div:hover {
-  /*when hovering an item:*/
-  background-color: #e9e9e9;
+	/*when hovering an item:*/
+	background-color: #e9e9e9;
 }
+
 .autocomplete-active {
-  /*when navigating through the items using the arrow keys:*/
-  background-color: DodgerBlue !important;
-  color: #ffffff;
+	/*when navigating through the items using the arrow keys:*/
+	background-color: DodgerBlue !important;
+	color: #ffffff;
 }
-.ruta{
-  margin-right: 2rem;
+
+.ruta {
+	margin-right: 2rem;
 }
-    body{
-        background-color: #f0ecec;
-    }
-  </style>
-  <body>
-    <div th:replace="fragments/svg:: svg"></div>
-      <div class="container">
-        <h1 class="m-2 text-center bg-light">Control Lácteo</h1>
-        <div class="container d-flex">
-            <div th:replace="fragments/sidemenu :: sidemenu"></div>
-            <div class="container">
-            <a name="" id="crearNuevoVale" onclick="addNew()" class="btn btn-primary float-end mb-2" href="#" role="button">Crear Vale</a>
-            <select onchange=filterByYear(event) name="year" class="year" id="year">
-              <option value="">Año</option>
-              <option th:selected="${year==selectedYear}" th:each="year: ${years}"
-              th:value="${year}"
-              th:text="${year}">
-            </select>
-            <button class="ver-vales btn btn-outline-dark float-end" style="margin-right: 1rem;" onclick="mostrarVales()">Mostrar vales</button>
-          <div class="tabla-container">
-            <table class="table  tabla-vales">
-              <thead>
-                <tr>
-                  <th data-orderable="false" scope="col">Meses</th>
-                  <th scope="col">Cantidad de leche</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr th:each="reg: ${registros}">
-                  <td th:text="${reg.mes}" scope="row"></td>
-                  <td th:text="${reg.cantidadDeLeche}" scope="row"></td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-          <div class="d-none tabla-informe-vales-container">
-            <table class="table  tabla-historial-vales">
-              <thead>
-                <tr>
-                  <th data-orderable="false" scope="col">Nombre del chofer</th>
-                  <th scope="col">Fecha</th>
-                  <th scope="col">Ruta</th>
-                  <th scope="col">Cantidad de leche</th>
-                  <th scope="col">Acciones</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr th:each="reg: ${listaVales}">
-                  <td th:text="${reg.nombreDelChofer}" scope="row"></td>
-                  <td th:text="${reg.fecha}" class="celdaFecha" scope="row"></td>
-                  <td th:text="${reg.ruta}" scope="row"></td>
-                  <td th:text="${reg.cantidadLeche}" scope="row"></td>
-                  <td>
-                    <a  th:onclick="editarVale([[${reg.id}]], [[${reg.nombreDelChofer}]], [[${reg.fecha}]], [[${reg.ruta}]], [[${reg.cantidadLeche}]])"  href="#">Editar</a>
-                    <a  th:onclick="deseaEliminar([[${reg.id}]])"  href="#">Eliminar</a>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
 
-          <div class="container d-none mt-3 control-datos-nombre-proveedor">
-            <form autocomplete="off" id="formvale"  onsubmit="getData(event)" method="post">
-              <div class="mb-3 main-container">
-                <div class="autocomplete w-100">
-                  <label for="exampleInputEmail1" class="form-label"
-                  >Nombre del chofer</label
-                >
-                <input
-                  type="text"
-                  class="form-control"
-                  id="nombreChoferInput"
-                  name="nombreChofer"
-                  required
-                  value=""
-                />
-                </div>
+body {
+	background-color: #f0ecec;
+}
+</style>
 
-              <label for="exampleInputEmail1" class="form-label"
-                  >Fecha</label
-                >
-                <input
-                  type="date"
-                  required
-                  class="form-control"
-                  id="fechaInput"
-                  name="fecha"
-                  value=""
-                />
-                <div class="d-flex">
-                  <div class="ruta py-2">
-                    <label for="exampleInputEmail1" class="form-label"
-                    >Ruta</label
-                  >
-                  <input
-                    type="text"
-                    required
-                    class="form-control"
-                     name="ruta"
-                    id="rutaInput"
-                    value="44"
-                  />
-                  </div>
-                  <div class="cantidadDeLeche py-2">
-                    <label for="exampleInputEmail1" class="form-label"
-                    >Cantidad de leche según Pesa</label
-                  >
-                  <input
-                    type="number"
-                    required
-                    class="form-control"
-                    id="cantidadsegúnPesa"
-                    name="cantidadsegúnPesa"
-                    onchange="calculateDiference()"
-                    value="0"
-                  />
-                  </div>
-            
-                </div>
-                <div class="vales-container bg-light overflow-auto" style="height: 10rem;">
-                  <div class="d-flex justify-content-between  bg-light p-1">
-                    <div class="numeroDeVale py-2">
-                      <label for="exampleInputEmail1" class="form-label"
-                      >Número de vale</label
-                    >
-                    <input
-                      type="text"
-                      required
-                      class="form-control"
-                      id="numeroDeVale"
-                      name="numeroDeVale0"
-                      value=""
-                    />
-                    </div>
-                    <div class="ProveedorCodigo py-2">
-                      <div class="autocomplete">
-                      <label for="exampleInputEmail1" class="form-label"
-                      >Proveedor</label
-                    >
-                    <input
-                      type="text"
-                      required
-                      class="form-control"
-                      id="ProveedorCodigo"
-                      name="ProveedorCodigo0"
-                      value=""
-                    />
-                      </div>
-                      
-                    </div>
-                    <div class="py-2">
-                      <label for="exampleInputEmail1" class="form-label"
-                      >Cantidad de leche</label
-                    >
-                    <input
-                      type="number"
-                      required
-                      class="form-control cantidadLeche"
-                      name="cantidadLeche0"
-                      onchange="calculateDiference()"
-                      value="0"
-                    />
-                    </div>
-                    <div onclick="addNewContainer(true)" class="plusIcon">
-                      <img style="cursor: pointer;" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAABmJLR0QA/wD/AP+gvaeTAAAAiUlEQVRIie2WOw6AIAxAn8ZT+dkl3v8C4D1wMAwaEpHWgdiXsLW8toEAGH9kA3YgKq0AuBJxUJSm5e+SLiOOJdVVcHH1H0kekYgnYKlNlow65b6NBxodtYnF3C//WLHHnNnnQknHuZMvzrHrZOLPGAS5E4LC7T2G87+lTSgJcuj+uzywKjZhNMIB+71PTa5DlQgAAAAASUVORK5CYII=">
-                    </div>
-                  </div>
-                </div>
+<body>
+	<div th:replace="fragments/svg:: svg"></div>
+	<div class="container">
+		<h1 class="m-2 text-center bg-light">Control Lácteo</h1>
+		<div class="container d-flex">
+			<div th:replace="fragments/sidemenu :: sidemenu"></div>
+			<div class="container">
+				<a name="" id="crearNuevoVale" onclick="addNew()"
+					class="btn btn-primary float-end mb-2" href="#" role="button">Crear
+					Vale</a> <select onchange=filterByYear(event) name="year" class="year"
+					id="year">
+					<option value="">Año</option>
+					<option th:selected="${year==selectedYear}"
+						th:each="year: ${years}" th:value="${year}" th:text="${year}">
+				</select>
+				<button class="ver-vales btn btn-outline-dark float-end"
+					style="margin-right: 1rem;" onclick="mostrarVales()">Mostrar
+					vales</button>
+				<div class="tabla-container">
+					<table class="table  tabla-vales">
+						<thead>
+							<tr>
+								<th data-orderable="false" scope="col">Meses</th>
+								<th scope="col">Cantidad de leche</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr th:each="reg: ${registros}">
+								<td th:text="${reg.mes}" scope="row"></td>
+								<td th:text="${reg.cantidadDeLeche}" scope="row"></td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+				<div class="d-none tabla-informe-vales-container">
+					<table class="table  tabla-historial-vales">
+						<thead>
+							<tr>
+								<th data-orderable="false" scope="col">Nombre del chofer</th>
+								<th scope="col">Fecha</th>
+								<th scope="col">Ruta</th>
+								<th scope="col">Cantidad de leche</th>
+								<th scope="col">Acciones</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr th:each="reg: ${listaVales}">
+								<td th:text="${reg.nombreDelChofer}" scope="row"></td>
+								<td th:text="${reg.fecha}" class="celdaFecha" scope="row"></td>
+								<td th:text="${reg.ruta}" scope="row"></td>
+								<td th:text="${reg.cantidadLeche}" scope="row"></td>
+								<td><a
+									th:onclick="editarVale([[${reg.id}]], [[${reg.nombreDelChofer}]], [[${reg.fecha}]], [[${reg.ruta}]], [[${reg.cantidadLeche}]])"
+									href="#">Editar</a> <a
+									th:onclick="deseaEliminar([[${reg.id}]])" href="#">Eliminar</a>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
 
-                <div class="totals bg-light d-flex">
-                  <p style="margin-right: 2rem;">Total: <span class="total">0</span></p>
-                  <p>Diferencia: <span class="diferencia">0</span></p>
-                </div>
-                </div>
-              <button type="submit" class="btn btn-primary crearNuevo">Crear</button>
-              <a href="javascript: window.location.reload()"  class="btn btn-secondary">Atrás</a>
-            </form>
-        </div>
-      </div>
-      <div th:replace="fragments/js:: js"></div>
-      <script>
-        $(document).ready( function () {
-    var DataTable = $('.tabla-vales').DataTable({
-      dom: 'Bfrtip',
-      "order": [],
-      "pageLength": 5,
-       buttons: [
-       {
+				<div class="container d-none mt-3 control-datos-nombre-proveedor">
+					<form autocomplete="off" id="formvale" onsubmit="getData(event)"
+						method="post">
+						<div class="mb-3 main-container">
+							<div class="autocomplete w-100">
+								<label for="exampleInputEmail1" class="form-label">Nombre
+									del chofer</label> <input type="text" pattern="^[a-zA-Z\s]*$"
+									oninvalid="getInvalid(this)" oninput="setCustomValidity('')"
+									class="form-control" id="nombreChoferInput" name="nombreChofer"
+									required value="" />
+							</div>
+
+							<label for="exampleInputEmail1" class="form-label">Fecha</label>
+							<input type="date" required class="form-control" id="fechaInput"
+								name="fecha" value="" />
+							<div class="d-flex">
+								<div class="ruta py-2">
+									<label for="exampleInputEmail1" class="form-label">Ruta</label>
+									<input type="text" required class="form-control" name="ruta"
+										id="rutaInput" value="44" />
+								</div>
+								<div class="cantidadDeLeche py-2">
+									<label for="exampleInputEmail1" class="form-label">Cantidad
+										de leche según Pesa</label> <input type="number" required
+										class="form-control" id="cantidadsegúnPesa"
+										name="cantidadsegúnPesa" onchange="calculateDiference()"
+										value="0" />
+								</div>
+
+							</div>
+							<div class="vales-container bg-light overflow-auto"
+								style="height: 10rem;">
+								<div class="d-flex justify-content-between  bg-light p-1">
+									<div class="numeroDeVale py-2">
+										<label for="exampleInputEmail1" class="form-label">Número
+											de vale</label> <input type="text" required class="form-control"
+											id="numeroDeVale" name="numeroDeVale0" value="" />
+									</div>
+									<div class="ProveedorCodigo py-2">
+										<div class="autocomplete">
+											<label for="exampleInputEmail1" class="form-label">Proveedor</label>
+											<input type="text" required class="form-control"
+												id="ProveedorCodigo" name="ProveedorCodigo0" value="" />
+										</div>
+
+									</div>
+									<div class="py-2">
+										<label for="exampleInputEmail1" class="form-label">Cantidad
+											de leche</label> <input type="number" required
+											class="form-control cantidadLeche" name="cantidadLeche0"
+											onchange="calculateDiference()" value="0" />
+									</div>
+									<div onclick="addNewContainer(true)" class="plusIcon">
+										<img style="cursor: pointer;"
+											src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAABmJLR0QA/wD/AP+gvaeTAAAAiUlEQVRIie2WOw6AIAxAn8ZT+dkl3v8C4D1wMAwaEpHWgdiXsLW8toEAGH9kA3YgKq0AuBJxUJSm5e+SLiOOJdVVcHH1H0kekYgnYKlNlow65b6NBxodtYnF3C//WLHHnNnnQknHuZMvzrHrZOLPGAS5E4LC7T2G87+lTSgJcuj+uzywKjZhNMIB+71PTa5DlQgAAAAASUVORK5CYII=">
+									</div>
+								</div>
+							</div>
+
+							<div class="totals bg-light d-flex">
+								<p style="margin-right: 2rem;">
+									Total: <span class="total">0</span>
+								</p>
+								<p>
+									Diferencia: <span class="diferencia">0</span>
+								</p>
+							</div>
+						</div>
+						<button type="submit" class="btn btn-primary crearNuevo">Crear</button>
+						<a href="javascript: window.location.reload()"
+							class="btn btn-secondary">Atrás</a>
+					</form>
+				</div>
+			</div>
+			<div th:replace="fragments/js:: js"></div>
+			<script>
+        $(document).ready(function () {
+          var DataTable = $('.tabla-vales').DataTable({
+            dom: 'Bfrtip',
+            "order": [],
+            "pageLength": 5,
+            buttons: [
+              {
                 extend: 'print',
-                text:"Imprimir",
+                text: "Imprimir",
                 exportOptions: {
-                    columns: [0,1]
+                  columns: [0, 1]
                 }
-            },
-            {
+              },
+              {
                 extend: 'excelHtml5',
-                text:"XLS",
-                title:"Vales",
+                text: "XLS",
+                title: "Vales",
                 exportOptions: {
-                    columns: [0,1]
+                  columns: [0, 1]
                 }
-            },
-            {
+              },
+              {
                 extend: 'pdfHtml5',
-                title:"Vales",
+                title: "Vales",
                 exportOptions: {
-                    columns: [ 0, 1]
+                  columns: [0, 1]
                 }
-            },
-    ],
-      language: {
-            url: window.location.origin + '/js/es-AR.json'
-        }
-    });
-    var DataTableHistorialVales = $('.tabla-historial-vales').DataTable({
-      dom: 'Bfrtip',
-      "order": [],
-      "pageLength": 5,
-       buttons: [
-       {
+              },
+            ],
+            language: {
+              url: window.location.origin + '/js/es-AR.json'
+            }
+          });
+          var DataTableHistorialVales = $('.tabla-historial-vales').DataTable({
+            dom: 'Bfrtip',
+            "order": [],
+            "pageLength": 5,
+            buttons: [
+              {
                 extend: 'print',
-                text:"Imprimir",
+                text: "Imprimir",
                 exportOptions: {
-                    columns: [0,1, 2, 3]
+                  columns: [0, 1, 2, 3]
                 }
-            },
-            {
+              },
+              {
                 extend: 'excelHtml5',
-                text:"XLS",
-                title:"Vales",
+                text: "XLS",
+                title: "Vales",
                 exportOptions: {
-                    columns: [0,1, 2, 3]
+                  columns: [0, 1, 2, 3]
                 }
-            },
-            {
+              },
+              {
                 extend: 'pdfHtml5',
-                title:"Vales",
+                title: "Vales",
                 exportOptions: {
-                    columns: [ 0, 1, 2, 3]
+                  columns: [0, 1, 2, 3]
                 }
-            },
-    ],
-      language: {
-            url: window.location.origin + '/js/es-AR.json'
+              },
+            ],
+            language: {
+              url: window.location.origin + '/js/es-AR.json'
+            }
+          });
+        });
+        function getInvalid(event) {
+          if (event.validity.patternMismatch) event.setCustomValidity('El nombre no puede contener números')
         }
-    });
-});
-     var token = $("meta[name='_csrf']").attr("content");
-     var header = $("meta[name='_csrf_header']").attr("content");
-     let nombres = [];
-      let codigos = [];
-      let provcode = document.getElementById("ProveedorCodigo");
-      async function deseaEliminar(id){
-        let confirmation = window.confirm(`Desea eliminar la entrada?`);
-        if(confirmation) {
-          $.ajax({
-            url: "deleteEntry/" + id,
-            type : 'DELETE',
-        data: token,
-        beforeSend:function(xhr){
-             xhr.setRequestHeader(header, token);
-        },
-        success : function(data) { 
-            window.location.reload()    
-        }, 
-        error : function(data) {
-            console.log(data);
-        }
-          })
+        var token = $("meta[name='_csrf']").attr("content");
+        var header = $("meta[name='_csrf_header']").attr("content");
+        let nombres = [];
+        let codigos = [];
+        let provcode = document.getElementById("ProveedorCodigo");
+        async function deseaEliminar(id) {
+          let confirmation = window.confirm(`Desea eliminar la entrada?`);
+          if (confirmation) {
+            $.ajax({
+              url: "deleteEntry/" + id,
+              type: 'DELETE',
+              data: token,
+              beforeSend: function (xhr) {
+                xhr.setRequestHeader(header, token);
+              },
+              success: function (data) {
+                window.location.reload()
+              },
+              error: function (data) {
+                console.log(data);
+              }
+            })
+          }
+
         }
 
-      }
-      
-      function addNew(){        
-        $(function(){
-            $.getJSON("/driversByName", function(data) {
-              nombres = data.map((i) => i[0] + " " +  i[1]);
+        function addNew() {
+          $(function () {
+            $.getJSON("/driversByName", function (data) {
+              nombres = data.map((i) => i[0] + " " + i[1]);
               autocomplete(document.getElementById("nombreChoferInput"), nombres);
-        })
-      });
-        autocompleteStart()
-        form.classList.remove("d-none");
-        list.classList.add("d-none");
-        verVales.classList.add("d-none");
-        yearSelector.classList.add("d-none");
-        crearNuevoVale.classList.add("d-none");
-        containerTableVales.classList.add("d-none");
-      }
+            })
+          });
+          autocompleteStart()
+          form.classList.remove("d-none");
+          list.classList.add("d-none");
+          verVales.classList.add("d-none");
+          yearSelector.classList.add("d-none");
+          crearNuevoVale.classList.add("d-none");
+          containerTableVales.classList.add("d-none");
+        }
 
-      function autocompleteStart(){
-        $(function(){
-            $.getJSON("/providersCodes", function(data) {
+        function autocompleteStart() {
+          $(function () {
+            $.getJSON("/providersCodes", function (data) {
               codigos = data.map((i) => i.toString())
               let inputsProvedores = document.querySelectorAll("#ProveedorCodigo");
               for (let i = 0; i < inputsProvedores.length; i++) {
-                  autocomplete(inputsProvedores[i], codigos);
+                autocomplete(inputsProvedores[i], codigos);
               }
-        });
-        })
-      }
-     async function getData(event) {
-      event.preventDefault();
-      let codigos = document.querySelectorAll("#ProveedorCodigo");
-      let numerosDeVale = document.querySelectorAll("#numeroDeVale");
-      let cantidadesDeLeches = document.querySelectorAll(".cantidadLeche");
-      var vales = [];
-      for (let i = 0; i < codigos.length; i++) {
-        let codigo = codigos[i].value;
-        let leche = cantidadesDeLeches[i].value;
-        let numeroDeVale =  numerosDeVale[i].value;
-        vales.push(
-          {
-            "numero_de_vale": numeroDeVale,
-            "codigo_proveedor": codigo,
-            "cantidad_de_leche": leche
+            });
+          })
+        }
+
+        async function getData(event) {
+          event.preventDefault();
+          let codigos = document.querySelectorAll("#ProveedorCodigo");
+          let numerosDeVale = document.querySelectorAll("#numeroDeVale");
+          let cantidadesDeLeches = document.querySelectorAll(".cantidadLeche");
+          var vales = [];
+          for (let i = 0; i < codigos.length; i++) {
+            let codigo = codigos[i].value;
+            let leche = cantidadesDeLeches[i].value;
+            let numeroDeVale = numerosDeVale[i].value;
+            vales.push(
+              {
+                "numero_de_vale": numeroDeVale,
+                "codigo_proveedor": codigo,
+                "cantidad_de_leche": leche
+              }
+            )
+            makeRequestPost(token, header, `/incrementInProvider`, { "codigo": codigo, "cantidadDeLeche": leche }, "/vales");
+            makeRequestPost(token, header, `/incrementInMunicipio`, { "codigo": codigo, "cantidadDeLeche": leche }, "/vales");
           }
-        )
-        makeRequestPost(token, header, `/incrementInProvider`, {"codigo": codigo, "cantidadDeLeche": leche}, "/vales");
-        makeRequestPost(token, header, `/incrementInMunicipio`, {"codigo": codigo, "cantidadDeLeche": leche}, "/vales");
-      }
-      var mes = new Date($("#fechaInput").val()).toLocaleString("es-ES", {month:"long"});
-      var año = new Date($("#fechaInput").val()).getFullYear();
-      var data = { "mes": mes, "year": año, "cantidadDeLeche": +document.querySelector(".total").textContent};
-      var total = +document.querySelector(".total").textContent;
-      console.log(total);
-      var datosEntrada = { 
-        "nombreDelChofer": document.getElementById("nombreChoferInput").value, 
-        "ruta": document.getElementById("rutaInput").value, 
-        "fecha": $("#fechaInput").val(), 
-        "cantidadLeche": total,
-        "vales": vales
-      };
-      let url  =  "/newRegistry";
-      let redirectTo = "/vales";
-      makeRequestPost(token, header, url, data, redirectTo);
-      makeRequestPost(token, header, "/newEntry", datosEntrada, redirectTo);
-      window.location.reload();
-      }
+          var mes = new Date($("#fechaInput").val()).toLocaleString("es-ES", { month: "long" });
+          var año = new Date($("#fechaInput").val()).getFullYear();
+          var data = { "mes": mes, "year": año, "cantidadDeLeche": +document.querySelector(".total").textContent };
+          var total = +document.querySelector(".total").textContent;
+          console.log(total);
+          var datosEntrada = {
+            "nombreDelChofer": document.getElementById("nombreChoferInput").value,
+            "ruta": document.getElementById("rutaInput").value,
+            "fecha": $("#fechaInput").val(),
+            "cantidadLeche": total,
+            "vales": vales
+          };
+          let url = "/newRegistry";
+          let redirectTo = "/vales";
+          makeRequestPost(token, header, url, data, redirectTo);
+          makeRequestPost(token, header, "/newEntry", datosEntrada, redirectTo);
+          window.location.reload();
+        }
 
 
-     async function filterByYear(event) {
-      console.log(event.target.value )
-      if(event.target.value == "") 
-      {window.location= '/vales';} else {
-      event.preventDefault();
-      let url  =  `/filterByYear`;
-      let yearT = [];
-      let data =  await getNewYears(token, header, url, {"year":+event.target.value}, yearT);
-      console.log(data.map(i => [i["mes"], i["cantidadDeLeche"]]));
-      $('.tabla-vales').DataTable().clear();
-      $('.tabla-vales').DataTable().rows.add(data.map(i => [i["mes"], i["cantidadDeLeche"]]));
-      $('.tabla-vales').DataTable().draw(false);
-      }
-      }
+        async function filterByYear(event) {
+          console.log(event.target.value)
+          if (event.target.value == "") { window.location = '/vales'; } else {
+            event.preventDefault();
+            let url = `/filterByYear`;
+            let yearT = [];
+            let data = await getNewYears(token, header, url, { "year": +event.target.value }, yearT);
+            console.log(data.map(i => [i["mes"], i["cantidadDeLeche"]]));
+            $('.tabla-vales').DataTable().clear();
+            $('.tabla-vales').DataTable().rows.add(data.map(i => [i["mes"], i["cantidadDeLeche"]]));
+            $('.tabla-vales').DataTable().draw(false);
+          }
+        }
 
-      let id = 1;
-      function addNewContainer(showIcons){
-        let plusAndMinusIcons = "";
-        if(showIcons){
-          plusAndMinusIcons = `
+        let id = 1;
+        function addNewContainer(showIcons) {
+          let plusAndMinusIcons = "";
+          if (showIcons) {
+            plusAndMinusIcons = `
           <div>        
             <div onclick="addNewContainer()" class="plusIcon">
                     <img style="cursor: pointer;" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAABmJLR0QA/wD/AP+gvaeTAAAAiUlEQVRIie2WOw6AIAxAn8ZT+dkl3v8C4D1wMAwaEpHWgdiXsLW8toEAGH9kA3YgKq0AuBJxUJSm5e+SLiOOJdVVcHH1H0kekYgnYKlNlow65b6NBxodtYnF3C//WLHHnNnnQknHuZMvzrHrZOLPGAS5E4LC7T2G87+lTSgJcuj+uzywKjZhNMIB+71PTa5DlQgAAAAASUVORK5CYII=">
@@ -413,8 +384,8 @@
                   </div>
             </div>`
 
-        } 
-        let newRow = `
+          }
+          let newRow = `
         <div id='items-${id}' class="d-flex justify-content-between bg-light p-1">
                   <div class="numeroDeVale py-2">
                     <label for="exampleInputEmail1" class="form-label">Número de vale</label>
@@ -433,51 +404,51 @@
                   </div>
                     ${plusAndMinusIcons}  
                 </div>`
-                console.log(plusAndMinusIcons)
-        id++;
-        $(".vales-container").append(newRow);
-        autocompleteStart();
-      }
-      function removeContainer(event) {
-        id--;
-        event.parentElement.parentElement.remove();
-        calculateDiference();
-      }
-      let form = document.querySelector(".control-datos-nombre-proveedor");
-      let verVales = document.querySelector(".ver-vales");
-      let list = document.querySelector(".tabla-container");
-      let containerTableVales = document.querySelector(".tabla-informe-vales-container");
-      let diferencia = document.querySelector(".diferencia");
-      let yearSelector = document.querySelector(".year");
-      let crearNuevoVale = document.querySelector("#crearNuevoVale");
-      let cantidadsegúnPesa = document.querySelector("#cantidadsegúnPesa");
-      
-      function calculateDiference(){
-        let cantidadLeches = document.querySelectorAll(".cantidadLeche");
-        let total = document.querySelector(".total");
-        let sum = 0;
-        for (let i = 0; i < cantidadLeches.length; i++) {
-          console.log(typeof cantidadLeches[i]);
-          sum += +cantidadLeches[i].value; 
+          console.log(plusAndMinusIcons)
+          id++;
+          $(".vales-container").append(newRow);
+          autocompleteStart();
         }
-        diferencia.textContent = cantidadsegúnPesa.value - sum;  
-        total.textContent = sum;
-      }
-      
-      function formatDate(){
-        document.querySelectorAll(".celdaFecha").forEach(
-          (el) => {el.textContent =  new Date(el.textContent).toLocaleDateString();}
-        )
-      }
-        $('.tabla-historial-vales').on( 'page.dt', function () {
+        function removeContainer(event) {
+          id--;
+          event.parentElement.parentElement.remove();
+          calculateDiference();
+        }
+        let form = document.querySelector(".control-datos-nombre-proveedor");
+        let verVales = document.querySelector(".ver-vales");
+        let list = document.querySelector(".tabla-container");
+        let containerTableVales = document.querySelector(".tabla-informe-vales-container");
+        let diferencia = document.querySelector(".diferencia");
+        let yearSelector = document.querySelector(".year");
+        let crearNuevoVale = document.querySelector("#crearNuevoVale");
+        let cantidadsegúnPesa = document.querySelector("#cantidadsegúnPesa");
+
+        function calculateDiference() {
+          let cantidadLeches = document.querySelectorAll(".cantidadLeche");
+          let total = document.querySelector(".total");
+          let sum = 0;
+          for (let i = 0; i < cantidadLeches.length; i++) {
+            console.log(typeof cantidadLeches[i]);
+            sum += +cantidadLeches[i].value;
+          }
+          diferencia.textContent = cantidadsegúnPesa.value - sum;
+          total.textContent = sum;
+        }
+
+        function formatDate() {
+          document.querySelectorAll(".celdaFecha").forEach(
+            (el) => { el.textContent = new Date(el.textContent).toLocaleDateString(); }
+          )
+        }
+        $('.tabla-historial-vales').on('page.dt', function () {
           formatDate()
-       } );
-       let idInUse = 0;
-       var totalInicial = 0;
-       function editarVale(id, nombre, fecha, ruta, cantidadLeche){
+        });
+        let idInUse = 0;
+        var totalInicial = 0;
+        function editarVale(id, nombre, fecha, ruta, cantidadLeche) {
           addNew()
           idInUse = id;
-          let plusIcon= document.querySelector(".plusIcon");
+          let plusIcon = document.querySelector(".plusIcon");
           plusIcon.classList.add("d-none");
           let formatedDate = new Date(fecha).toLocaleDateString();
           document.querySelector(".crearNuevo").textContent = 'Actualizar';
@@ -485,101 +456,102 @@
           document.getElementById("fechaInput").valueAsDate = new Date(formatedDate);
           document.getElementById("rutaInput").value = ruta;
 
-          $.getJSON(`/getValesForId/${id}`, function(data) {
-            for (let i = 0; i < data.length -1; i++) {
+          $.getJSON(`/getValesForId/${id}`, function (data) {
+            for (let i = 0; i < data.length - 1; i++) {
               addNewContainer(false)
             }
             let codigosProvedores = document.querySelectorAll("#ProveedorCodigo")
             let numerosDeVale = document.querySelectorAll("#numeroDeVale")
             let cantidadesDeLeche = document.querySelectorAll(".cantidadLeche")
-              codigosProvedores[0].value =  data[0][1];
-              numerosDeVale[0].value =  data[0][0];
-              cantidadesDeLeche[0].value = data[0][2];
-              if(data.length > 1){
-                for (let i = 1; i < data.length; i++) {
-                  codigosProvedores[i].value =  data[i][1];
-                  numerosDeVale[i].value =  data[i][0];
-                  cantidadesDeLeche[i].value = data[i][2];
-                  console.log(data[i][0], data[i][1], data[i][2])
+            codigosProvedores[0].value = data[0][1];
+            numerosDeVale[0].value = data[0][0];
+            cantidadesDeLeche[0].value = data[0][2];
+            if (data.length > 1) {
+              for (let i = 1; i < data.length; i++) {
+                codigosProvedores[i].value = data[i][1];
+                numerosDeVale[i].value = data[i][0];
+                cantidadesDeLeche[i].value = data[i][2];
+                console.log(data[i][0], data[i][1], data[i][2])
+              }
             }
-          }
-          calculateDiference()
-          totalInicial = document.querySelector(".total").textContent;
-          let formVale = document.querySelector("#formvale");
-          console.log(formVale);
-          formVale.setAttribute("onsubmit", "updateVale(event)");
-        })
-       }
+            calculateDiference()
+            totalInicial = document.querySelector(".total").textContent;
+            let formVale = document.querySelector("#formvale");
+            console.log(formVale);
+            formVale.setAttribute("onsubmit", "updateVale(event)");
+          })
+        }
 
-       function updateVale(event){
-        event.preventDefault();
-        let total = document.querySelector(".total");
-        var datosEntrada = {
-        "id": idInUse,
-        "nombreDelChofer": document.getElementById("nombreChoferInput").value, 
-        "ruta": document.getElementById("rutaInput").value, 
-        "fecha": new Date($("#fechaInput").val()), 
-        "cantidadLeche": +total.textContent,
-      };
+        function updateVale(event) {
+          event.preventDefault();
+          let total = document.querySelector(".total");
+          var datosEntrada = {
+            "id": idInUse,
+            "nombreDelChofer": document.getElementById("nombreChoferInput").value,
+            "ruta": document.getElementById("rutaInput").value,
+            "fecha": new Date($("#fechaInput").val()),
+            "cantidadLeche": +total.textContent,
+          };
 
-        var datosEntrada = {
-        "id": idInUse,
-        "nombreDelChofer": document.getElementById("nombreChoferInput").value, 
-        "ruta": document.getElementById("rutaInput").value, 
-        "fecha": new Date($("#fechaInput").val()), 
-        "cantidadLeche": +total.textContent,
-      };
-      makeRequestPost(token, header, "/updateEntrada", datosEntrada, "/");
-      let codigos = document.querySelectorAll("#ProveedorCodigo");
-      let numerosDeVale = document.querySelectorAll("#numeroDeVale");
-      let cantidadesDeLeches = document.querySelectorAll(".cantidadLeche");
-      let ids = [];
-          $.getJSON(`/getValesIds`, function(data) {
+          var datosEntrada = {
+            "id": idInUse,
+            "nombreDelChofer": document.getElementById("nombreChoferInput").value,
+            "ruta": document.getElementById("rutaInput").value,
+            "fecha": new Date($("#fechaInput").val()),
+            "cantidadLeche": +total.textContent,
+          };
+          makeRequestPost(token, header, "/updateEntrada", datosEntrada, "/");
+          let codigos = document.querySelectorAll("#ProveedorCodigo");
+          let numerosDeVale = document.querySelectorAll("#numeroDeVale");
+          let cantidadesDeLeches = document.querySelectorAll(".cantidadLeche");
+          let ids = [];
+          $.getJSON(`/getValesIds`, function (data) {
             ids = data;
             for (let i = 0; i < codigos.length; i++) {
-        let codigo = codigos[i].value;
-        let leche = cantidadesDeLeches[i].value;
-        let numeroDeVale =  numerosDeVale[i].value;
-        let entry =   {
-          "id": ids[i],
-          "numero_de_vale": numeroDeVale,
-          "codigo_proveedor": codigo,
-          "cantidad_de_leche": +leche
-        }
-        console.log(total.textContent ,  totalInicial);
-        var datosEntrada = { 
-        "nombreDelChofer": document.getElementById("nombreChoferInput").value, 
-        "ruta": document.getElementById("rutaInput").value, 
-        "fecha": $("#fechaInput").val(), 
-        "cantidadLeche": total,
-      };
-      var mes = new Date($("#fechaInput").val()).toLocaleString("es-ES", {month:"long"});
-      var año = new Date($("#fechaInput").val()).getFullYear();
-      var data = { "mes": mes, "year": año, "cantidadDeLeche": +total.textContent};
-      if(total.textContent > totalInicial) {
-          makeRequestPost(token, header, `/incrementInProvider`, {"codigo": codigo, "cantidadDeLeche": +leche}, "/vales");
-          makeRequestPost(token, header, `/incrementInMunicipio`, {"codigo": codigo, "cantidadDeLeche": +leche}, "/vales");
-          makeRequestPost(token, header, `/incrementInRegistry`, data, "/vales");
-        } else {
-          makeRequestPost(token, header, `/decrementInProvider`, {"codigo": codigo, "cantidadDeLeche": +leche}, "/vales");
-          makeRequestPost(token, header, `/decrementInMunicipio`, {"codigo": codigo, "cantidadDeLeche": +leche}, "/vales");
-          makeRequestPost(token, header, `/decrementInRegistry`, data, "/vales");
-        }
-          makeRequestPost(token, header, `/updateVale`, entry, "/");
-        }
+              let codigo = codigos[i].value;
+              let leche = cantidadesDeLeches[i].value;
+              let numeroDeVale = numerosDeVale[i].value;
+              let entry = {
+                "id": ids[i],
+                "numero_de_vale": numeroDeVale,
+                "codigo_proveedor": codigo,
+                "cantidad_de_leche": +leche
+              }
+              console.log(total.textContent, totalInicial);
+              var datosEntrada = {
+                "nombreDelChofer": document.getElementById("nombreChoferInput").value,
+                "ruta": document.getElementById("rutaInput").value,
+                "fecha": $("#fechaInput").val(),
+                "cantidadLeche": total,
+              };
+              var mes = new Date($("#fechaInput").val()).toLocaleString("es-ES", { month: "long" });
+              var año = new Date($("#fechaInput").val()).getFullYear();
+              var data = { "mes": mes, "year": año, "cantidadDeLeche": +total.textContent };
+              if (total.textContent > totalInicial) {
+                makeRequestPost(token, header, `/incrementInProvider`, { "codigo": codigo, "cantidadDeLeche": +leche }, "/vales");
+                makeRequestPost(token, header, `/incrementInMunicipio`, { "codigo": codigo, "cantidadDeLeche": +leche }, "/vales");
+                makeRequestPost(token, header, `/incrementInRegistry`, data, "/vales");
+              } else {
+                makeRequestPost(token, header, `/decrementInProvider`, { "codigo": codigo, "cantidadDeLeche": +leche }, "/vales");
+                makeRequestPost(token, header, `/decrementInMunicipio`, { "codigo": codigo, "cantidadDeLeche": +leche }, "/vales");
+                makeRequestPost(token, header, `/decrementInRegistry`, data, "/vales");
+              }
+              makeRequestPost(token, header, `/updateVale`, entry, "/");
+            }
           })
- 
-      window.location.reload();
-      }
-      
-      function mostrarVales() {
-        list.classList.toggle("d-none");
-        containerTableVales.classList.toggle("d-none");
-        verVales.textContent = !containerTableVales.classList.contains("d-none") ?  "Mostrar meses" : "Mostrar vales";
-        formatDate()
-      }
+
+          window.location.reload();
+        }
+
+        function mostrarVales() {
+          list.classList.toggle("d-none");
+          containerTableVales.classList.toggle("d-none");
+          verVales.textContent = !containerTableVales.classList.contains("d-none") ? "Mostrar meses" : "Mostrar vales";
+          formatDate()
+        }
 
 
       </script>
-  </body>
+</body>
+
 </html>

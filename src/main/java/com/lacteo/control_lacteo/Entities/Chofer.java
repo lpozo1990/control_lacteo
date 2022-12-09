@@ -19,5 +19,5 @@ public class Chofer {
     private String nombre;
     private String apellidos;
     
-     
+
 }
