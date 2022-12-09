@@ -16,6 +16,7 @@ import com.lacteo.control_lacteo.Entities.Municipio;
 import com.lacteo.control_lacteo.Entities.Proveedor;
 import com.lacteo.control_lacteo.Service.MunicipioService;
 import com.lacteo.control_lacteo.Service.ProvidersService;
+import com.lacteo.control_lacteo.repositories.MunicipioRepository;
 import com.lacteo.control_lacteo.repositories.ProviderRepository;
 
 /**
@@ -23,6 +24,8 @@ import com.lacteo.control_lacteo.repositories.ProviderRepository;
  */
 @Controller
 public class ProvidersController {
+	@Autowired
+	private MunicipioRepository municipioRepo;
     private MunicipioService municipioService;
 
     @Autowired
@@ -66,6 +69,21 @@ public class ProvidersController {
     @RequestMapping(value = "actualizarProveedor/{id}", method = RequestMethod.POST, consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
     public String updateProvider(@PathVariable Integer id, @RequestBody MultiValueMap<String, String> formData) {
         this.provRepo.updateProvider(id, formData.getFirst("nombre"), formData.getFirst("municipio"), formData.getFirst("codigo"));
+    	Proveedor pro = this.provRepo.findById(id).get();
+    	String municipio = pro.getMunicipio();
+    	var wrapper = new Object(){ Boolean isInList = false; };
+    	this.municipioRepo.findAll().forEach(m -> {
+    		if(m.getNombre().equals(municipio)) {
+    			wrapper.isInList  = true;
+    			return;
+    		}
+    	});
+    	if(!wrapper.isInList) {
+    		Municipio munic = new Municipio();
+    		munic.setNombre(municipio);
+    		munic.setCantidadDeLeche(0);
+    		this.municipioRepo.save(munic);
+    	}
         return "redirect:/proveedores";
     }
 

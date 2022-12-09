@@ -1,10 +1,15 @@
 package com.lacteo.control_lacteo.Controllers;
 
 
+import java.sql.Timestamp;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
+import java.util.Optional;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +25,7 @@ import com.lacteo.control_lacteo.Entities.Registro;
 import com.lacteo.control_lacteo.Entities.Vale;
 import com.lacteo.control_lacteo.Service.NewRegistryService;
 import com.lacteo.control_lacteo.repositories.EntradaRepository;
+import com.lacteo.control_lacteo.repositories.RegistroRepository;
 import com.lacteo.control_lacteo.repositories.ValeRepository;
 
 @RestController
@@ -27,7 +33,9 @@ public class NewRegistryController {
     private NewRegistryService regService;
     private EntradaRepository entRepo;
     private ValeRepository valeRepo;
-
+    @Autowired
+    private RegistroRepository registroRepo;
+    
     @Autowired
     public void setChoferService(NewRegistryService regService) {
         this.regService = regService;

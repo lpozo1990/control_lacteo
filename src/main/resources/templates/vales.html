@@ -110,7 +110,7 @@ body {
 								<td><a
 									th:onclick="editarVale([[${reg.id}]], [[${reg.nombreDelChofer}]], [[${reg.fecha}]], [[${reg.ruta}]], [[${reg.cantidadLeche}]])"
 									href="#">Editar</a> <a
-									th:onclick="deseaEliminar([[${reg.id}]])" href="#">Eliminar</a>
+									th:onclick="deseaEliminar([[${reg.id}]], [[${reg.fecha}]], [[${reg.cantidadLeche}]])" href="#">Eliminar</a>
 								</td>
 							</tr>
 						</tbody>
@@ -267,26 +267,7 @@ body {
         let nombres = [];
         let codigos = [];
         let provcode = document.getElementById("ProveedorCodigo");
-        async function deseaEliminar(id) {
-          let confirmation = window.confirm(`Desea eliminar la entrada?`);
-          if (confirmation) {
-            $.ajax({
-              url: "deleteEntry/" + id,
-              type: 'DELETE',
-              data: token,
-              beforeSend: function (xhr) {
-                xhr.setRequestHeader(header, token);
-              },
-              success: function (data) {
-                window.location.reload()
-              },
-              error: function (data) {
-                console.log(data);
-              }
-            })
-          }
 
-        }
 
         function addNew() {
           $(function () {
@@ -564,7 +545,30 @@ body {
 
           window.location.reload();
         }
+        async function deseaEliminar(id, fecha, cantidadLeche) {
+            var mes = new Date(fecha).toLocaleString("es-ES", { month: "long" });
+            var año = new Date(fecha).getFullYear();
+            var data = { "mes": mes, "year": año, "cantidadDeLeche": cantidadLeche };
+            let confirmation = window.confirm(`Desea eliminar la entrada?`);
+            if (confirmation) {
+              makeRequestPost(token, header, `/decrementInRegistry`, data, "/vales");
+              $.ajax({
+                url: "deleteEntry/" + id,
+                type: 'DELETE',
+                data: token,
+                beforeSend: function (xhr) {
+                  xhr.setRequestHeader(header, token);
+                },
+                success: function (data) {
+                  window.location.reload()
+                },
+                error: function (data) {
+                  console.log(data);
+                }
+              })
+            }
 
+          }
         function mostrarVales() {
           list.classList.toggle("d-none");
           containerTableVales.classList.toggle("d-none");

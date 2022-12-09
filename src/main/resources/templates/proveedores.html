@@ -90,15 +90,15 @@
           <form autocomplete="off" th:object="${Proveedor}" th:action="@{/newProvider}" method="post">
             <div class="mb-3">
               <label for="exampleInputEmail1" class="form-label">Código del Proveedor</label>
-              <input type="text" class="form-control" id="codigoProveedor" required th:field="*{codigo}" value="" />
+              <input type="number" class="form-control"   id="codigoProveedor" required th:field="*{codigo}" value="" />
               <label for="exampleInputEmail1" class="form-label">Nombre del Proveedor</label>
-              <input type="text" required pattern="[A-Za-z]+" oninvalid="getInvalid(this)"
+              <input type="text" required pattern="^[a-zA-Z\s]*$" oninvalid="getInvalid(this)"
                 oninput="setCustomValidity('')" class="form-control" id="nombreProveedor" th:field="*{nombre}"
                 value="" />
 
               <div class="autocomplete w-100">
                 <label for="exampleInputEmail1" class="form-label">Municipio</label>
-                <input type="text" pattern="[A-Za-z]+" oninvalid="getInvalid(this)" oninput="setCustomValidity('')"
+                <input type="text" pattern="^[a-zA-Z\s]*$" oninvalid="getInvalid(this)" oninput="setCustomValidity('')"
                   required class="form-control municipio" id="municipiosAutocomplete" th:field="*{municipio}"
                   value="" />
               </div>

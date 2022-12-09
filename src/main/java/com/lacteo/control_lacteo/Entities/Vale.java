@@ -11,10 +11,12 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import lombok.Data;
+import lombok.ToString;
 
 
 @Data
 @Entity
+@ToString(exclude = {"entrada"})
 @Table(name = "Vales")
 public class Vale implements Serializable {
     @Id
