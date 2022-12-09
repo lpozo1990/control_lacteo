@@ -104,7 +104,7 @@ body {
 						<tbody>
 							<tr th:each="reg: ${listaVales}">
 								<td th:text="${reg.nombreDelChofer}" scope="row"></td>
-								<td th:text="${reg.fecha}" class="celdaFecha" scope="row"></td>
+								<td th:text="${#dates.format(reg.fecha, 'dd-MM-yyyy')}" class="celdaFecha" scope="row"></td>
 								<td th:text="${reg.ruta}" scope="row"></td>
 								<td th:text="${reg.cantidadLeche}" scope="row"></td>
 								<td><a
@@ -394,7 +394,7 @@ body {
           if (showIcons) {
             plusAndMinusIcons = `
           <div>        
-            <div onclick="addNewContainer()" class="plusIcon">
+            <div onclick="addNewContainer(true)" class="plusIcon">
                     <img style="cursor: pointer;" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAABmJLR0QA/wD/AP+gvaeTAAAAiUlEQVRIie2WOw6AIAxAn8ZT+dkl3v8C4D1wMAwaEpHWgdiXsLW8toEAGH9kA3YgKq0AuBJxUJSm5e+SLiOOJdVVcHH1H0kekYgnYKlNlow65b6NBxodtYnF3C//WLHHnNnnQknHuZMvzrHrZOLPGAS5E4LC7T2G87+lTSgJcuj+uzywKjZhNMIB+71PTa5DlQgAAAAASUVORK5CYII=">
                   </div>
                   <div onclick="removeContainer(this)" class="plusIcon">
@@ -453,14 +453,6 @@ body {
           total.textContent = sum;
         }
 
-        function formatDate() {
-          document.querySelectorAll(".celdaFecha").forEach(
-            (el) => { el.textContent = new Date(el.textContent).toLocaleDateString(); }
-          )
-        }
-        $('.tabla-historial-vales').on('page.dt', function () {
-          formatDate()
-        });
         let idInUse = 0;
         var totalInicial = 0;
         function editarVale(id, nombre, fecha, ruta, cantidadLeche) {
@@ -588,7 +580,6 @@ body {
           list.classList.toggle("d-none");
           containerTableVales.classList.toggle("d-none");
           verVales.textContent = !containerTableVales.classList.contains("d-none") ? "Mostrar meses" : "Mostrar vales";
-          formatDate()
         }
 
 

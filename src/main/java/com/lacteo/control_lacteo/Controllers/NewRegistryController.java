@@ -1,6 +1,5 @@
 package com.lacteo.control_lacteo.Controllers;
 
-
 import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -25,81 +24,78 @@ import com.lacteo.control_lacteo.Entities.Registro;
 import com.lacteo.control_lacteo.Entities.Vale;
 import com.lacteo.control_lacteo.Service.NewRegistryService;
 import com.lacteo.control_lacteo.repositories.EntradaRepository;
+import com.lacteo.control_lacteo.repositories.MunicipioRepository;
 import com.lacteo.control_lacteo.repositories.RegistroRepository;
 import com.lacteo.control_lacteo.repositories.ValeRepository;
 
 @RestController
 public class NewRegistryController {
-    private NewRegistryService regService;
-    private EntradaRepository entRepo;
-    private ValeRepository valeRepo;
-    @Autowired
-    private RegistroRepository registroRepo;
-    
-    @Autowired
-    public void setChoferService(NewRegistryService regService) {
-        this.regService = regService;
-    }
 
-    @Autowired
-    public void setEntradaRepository(EntradaRepository entRepo) {
-        this.entRepo = entRepo;
-    }
-    @Autowired
-    public void setValeRepository(ValeRepository valeRepo) {
-        this.valeRepo = valeRepo;
-    }
+	@Autowired
+	private NewRegistryService regService;
+	@Autowired
+	private EntradaRepository entRepo;
+	@Autowired
+	private ValeRepository valeRepo;
+	@Autowired
+	private RegistroRepository registroRepo;
 
-    @PostMapping("newRegistry")
-    void createRegistry(@RequestBody Registro registro) {
-         this.regService.saveRegistro(registro);
-    }
 
-    @PostMapping("incrementInRegistry")
-    void incrementInRegistry(@RequestBody Registro registro) {
-        System.out.println(registro);
-         this.regService.incrementInRegistry(registro.getMes(), registro.getYear(), registro.getCantidadDeLeche());
-    }
+	@PostMapping("newRegistry")
+	void createRegistry(@RequestBody Registro registro) {
+		this.regService.saveRegistro(registro);
+	}
 
-    @PostMapping("decrementInRegistry")
+	@PostMapping("incrementInRegistry")
+	void incrementInRegistry(@RequestBody Registro registro) {
+		System.out.println(registro);
+		this.regService.incrementInRegistry(registro.getMes(), registro.getYear(), registro.getCantidadDeLeche());
+	}
+
+	@PostMapping("decrementInRegistry")
     void decrementInRegistry(@RequestBody Registro registro) {
-        System.out.println(registro);
+		 long cantidad = this.entRepo.count();
+		 if(cantidad == 1) {
+			 List<Registro> result = this.registroRepo.findByMesAndYear(registro.getMes(), registro.getYear());
+			 Registro reg = result.get(0);
+			 this.registroRepo.delete(reg);
+		 }
+         System.out.println(cantidad);
          this.regService.decrementInRegistry(registro.getMes(), registro.getYear(), registro.getCantidadDeLeche());
     }
 
+	@GetMapping("getValesForId/{id}")
+	List<Object> getValesForId(@PathVariable Integer id) {
+		System.out.println(id);
+		return this.valeRepo.getValesForId(id);
+	}
 
+	@GetMapping("getValesIds")
+	List<Integer> getValesIds() {
+		return this.valeRepo.getValesIds();
+	}
 
-    @GetMapping("getValesForId/{id}")
-    List<Object> getValesForId(@PathVariable Integer id){
-        System.out.println(id);
-        return this.valeRepo.getValesForId(id);
-    }
-    @GetMapping("getValesIds")
-    List<Integer> getValesIds(){
-        return this.valeRepo.getValesIds();
-    }
+	@PostMapping("newEntry")
+	void createEntry(@RequestBody Entrada entrada) {
+		System.out.println(entrada);
+		Integer n = entrada.getVales().size();
+		this.entRepo.save(entrada);
+		for (int i = 0; i < n; i++) {
+			Vale vale = entrada.getVales().get(i);
+			Vale newVale = new Vale();
+			newVale.setEntrada(entrada);
+			newVale.setNumero_de_vale(vale.getNumero_de_vale());
+			newVale.setCodigo_proveedor(vale.getCodigo_proveedor());
+			newVale.setCantidad_de_leche(vale.getCantidad_de_leche());
+			System.out.println(newVale);
+			this.valeRepo.save(newVale);
+		}
+		System.out.println(entrada);
 
-    @PostMapping("newEntry")
-    void createEntry(@RequestBody Entrada entrada) {
-        System.out.println(entrada); 
-        Integer n  = entrada.getVales().size();
-        this.entRepo.save(entrada);
-        for(int i=0; i < n; i++) {
-            Vale vale = entrada.getVales().get(i);
-            Vale newVale = new Vale();
-            newVale.setEntrada(entrada);
-            newVale.setNumero_de_vale(vale.getNumero_de_vale());
-            newVale.setCodigo_proveedor(vale.getCodigo_proveedor());
-            newVale.setCantidad_de_leche(vale.getCantidad_de_leche());
-            System.out.println(newVale); 
-            this.valeRepo.save(newVale);
-        }
-        System.out.println(entrada); 
+	}
 
-    }
-
-    @DeleteMapping("deleteEntry/{id}")
-    void delete(@PathVariable Integer id) {
-        this.entRepo.deleteById(id);
-    }
+	@DeleteMapping("deleteEntry/{id}")
+	void delete(@PathVariable Integer id) {
+		this.entRepo.deleteById(id);
+	}
 }

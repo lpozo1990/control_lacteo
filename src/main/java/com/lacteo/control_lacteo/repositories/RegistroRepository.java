@@ -14,7 +14,8 @@ public interface RegistroRepository extends CrudRepository<Registro, Integer> {
 
     @Query(value = "SELECT DISTINCT year FROM registros;", nativeQuery = true)
     List<Integer> getAllYears();
-
+    
+    List<Registro> findByMesAndYear(String mes, Integer year);
 
     @Transactional
     @Modifying
