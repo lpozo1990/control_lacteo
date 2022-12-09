@@ -136,11 +136,11 @@ body {
 								<div class="ruta py-2">
 									<label for="exampleInputEmail1" class="form-label">Ruta</label>
 									<input type="text" required class="form-control" name="ruta"
-										id="rutaInput" value="44" />
+										id="rutaInput" value="" />
 								</div>
 								<div class="cantidadDeLeche py-2">
 									<label for="exampleInputEmail1" class="form-label">Cantidad
-										de leche según Pesa</label> <input type="number" required
+										de leche según pesa</label> <input type="number" required
 										class="form-control" id="cantidadsegúnPesa"
 										name="cantidadsegúnPesa" onchange="calculateDiference()"
 										value="0" />
@@ -185,7 +185,7 @@ body {
 								</p>
 							</div>
 						</div>
-						<button type="submit" class="btn btn-primary crearNuevo">Crear</button>
+						<button type="submit"  class="btn btn-primary crearNuevo">Crear</button>
 						<a href="javascript: window.location.reload()"
 							class="btn btn-secondary">Atrás</a>
 					</form>
@@ -311,6 +311,7 @@ body {
               let inputsProvedores = document.querySelectorAll("#ProveedorCodigo");
               for (let i = 0; i < inputsProvedores.length; i++) {
                 autocomplete(inputsProvedores[i], codigos);
+                
               }
             });
           })
@@ -321,11 +322,26 @@ body {
           let codigos = document.querySelectorAll("#ProveedorCodigo");
           let numerosDeVale = document.querySelectorAll("#numeroDeVale");
           let cantidadesDeLeches = document.querySelectorAll(".cantidadLeche");
+      	  let choferesDisponibles = await makeRequestGet(token, header, "/getDriversNames", '/');
+          choferesDisponibles =  choferesDisponibles.map((i) => i.nombre + " " + i.apellidos);
+          if(!choferesDisponibles.includes(document.getElementById("nombreChoferInput").value)) {
+        	  alert("Debe insertar un chofer de los disponibles");
+        	  return;
+          }
           var vales = [];
           for (let i = 0; i < codigos.length; i++) {
-            let codigo = codigos[i].value;
+        	let codigosDisponibles = await makeRequestGet(token, header, "/providersCodes", '/');
+        	let codigo = codigos[i].value;
             let leche = cantidadesDeLeches[i].value;
             let numeroDeVale = numerosDeVale[i].value;
+            if(!codigosDisponibles.includes(codigo)){
+            	alert(codigo + " no es un proveedor válido");
+        		return;
+            }
+            if(leche <= 0){
+            	alert("La cantidad de leche en " + codigo + " no puede ser menor o igual a cero");
+        		return;
+            }
             vales.push(
               {
                 "numero_de_vale": numeroDeVale,
@@ -348,6 +364,12 @@ body {
             "cantidadLeche": total,
             "vales": vales
           };
+          
+          if(total <= 0 ) {
+        	  form.classList.add("disabled");
+        	  alert("La cantidad de leche no puede ser menor o igual a cero");
+        	  return;
+          }
           let url = "/newRegistry";
           let redirectTo = "/vales";
           makeRequestPost(token, header, url, data, redirectTo);
