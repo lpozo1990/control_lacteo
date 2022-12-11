@@ -77,7 +77,7 @@ public class NewRegistryController {
 
 	@PostMapping("newEntry")
 	void createEntry(@RequestBody Entrada entrada) {
-		System.out.println(entrada);
+		System.out.println(entrada.getVales());
 		Integer n = entrada.getVales().size();
 		this.entRepo.save(entrada);
 		for (int i = 0; i < n; i++) {

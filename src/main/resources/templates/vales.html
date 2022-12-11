@@ -341,7 +341,7 @@ body {
             vales.push(
               {
                 "numero_de_vale": numeroDeVale,
-                "codigo_proveedor": codigo,
+                "codigoProveedor": codigo,
                 "cantidad_de_leche": leche
               }
             )
@@ -352,7 +352,7 @@ body {
           var año = new Date($("#fechaInput").val()).getFullYear();
           var data = { "mes": mes, "year": año, "cantidadDeLeche": +document.querySelector(".total").textContent };
           var total = +document.querySelector(".total").textContent;
-          console.log(total);
+          console.log(vales);
           var datosEntrada = {
             "nombreDelChofer": document.getElementById("nombreChoferInput").value,
             "ruta": document.getElementById("rutaInput").value,
