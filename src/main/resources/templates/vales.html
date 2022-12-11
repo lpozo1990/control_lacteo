@@ -104,7 +104,7 @@ body {
 						<tbody>
 							<tr th:each="reg: ${listaVales}">
 								<td th:text="${reg.nombreDelChofer}" scope="row"></td>
-								<td th:text="${#dates.format(reg.fecha, 'dd-MM-yyyy')}" class="celdaFecha" scope="row"></td>
+								<td th:text="${reg.fecha}" class="celdaFecha" scope="row"></td>
 								<td th:text="${reg.ruta}" scope="row"></td>
 								<td th:text="${reg.cantidadLeche}" scope="row"></td>
 								<td><a
@@ -259,6 +259,16 @@ body {
             }
           });
         });
+        function getFormatedDates(){
+            let dates  = document.querySelectorAll(".celdaFecha");
+            
+            dates.forEach(date => {
+               date.textContent = new Date(new Date(date.textContent).setDate(new Date(date.textContent).getDate() +1)).toLocaleDateString()
+            })
+        }
+
+        getFormatedDates()
+
         function getInvalid(event) {
           if (event.validity.patternMismatch) event.setCustomValidity('El nombre no puede contener números')
         }
@@ -285,6 +295,7 @@ body {
             let fechaInput = document.getElementById("fechaInput");
             console.log(fechaInput);
             fechaInput.setAttribute("max", today);
+            
           $(function () {
             $.getJSON("/driversByName", function (data) {
               nombres = data.map((i) => i[0] + " " + i[1]);
@@ -455,21 +466,22 @@ body {
 
         let idInUse = 0;
         var totalInicial = 0;
-        function editarVale(id, nombre, fecha, ruta, cantidadLeche) {
+       async function editarVale(id, nombre, fecha, ruta, cantidadLeche) {
           addNew()
+          console.log(fecha);
           idInUse = id;
           let plusIcon = document.querySelector(".plusIcon");
           plusIcon.classList.add("d-none");
-          let formatedDate = new Date(fecha).toLocaleDateString();
           document.querySelector(".crearNuevo").textContent = 'Actualizar';
           document.getElementById("nombreChoferInput").value = nombre;
-          document.getElementById("fechaInput").valueAsDate = new Date(formatedDate);
+          document.getElementById("fechaInput").valueAsDate = new Date(fecha);
           document.getElementById("rutaInput").value = ruta;
 
           $.getJSON(`/getValesForId/${id}`, function (data) {
             for (let i = 0; i < data.length - 1; i++) {
               addNewContainer(false)
             }
+
             let codigosProvedores = document.querySelectorAll("#ProveedorCodigo")
             let numerosDeVale = document.querySelectorAll("#numeroDeVale")
             let cantidadesDeLeche = document.querySelectorAll(".cantidadLeche")
@@ -492,63 +504,66 @@ body {
           })
         }
 
-        function updateVale(event) {
+        async function updateVale(event) {
           event.preventDefault();
           let total = document.querySelector(".total");
-          var datosEntrada = {
-            "id": idInUse,
-            "nombreDelChofer": document.getElementById("nombreChoferInput").value,
-            "ruta": document.getElementById("rutaInput").value,
-            "fecha": new Date($("#fechaInput").val()),
-            "cantidadLeche": +total.textContent,
-          };
+      	  let choferesDisponibles = await makeRequestGet(token, header, "/getDriversNames", '/');
+          choferesDisponibles =  choferesDisponibles.map((i) => i.nombre + " " + i.apellidos);
+          if(!choferesDisponibles.includes(document.getElementById("nombreChoferInput").value)) {
+        	  alert("Debe insertar un chofer de los disponibles");
+        	  return;
+          }
 
-          var datosEntrada = {
-            "id": idInUse,
-            "nombreDelChofer": document.getElementById("nombreChoferInput").value,
-            "ruta": document.getElementById("rutaInput").value,
-            "fecha": new Date($("#fechaInput").val()),
-            "cantidadLeche": +total.textContent,
-          };
-          makeRequestPost(token, header, "/updateEntrada", datosEntrada, "/");
           let codigos = document.querySelectorAll("#ProveedorCodigo");
           let numerosDeVale = document.querySelectorAll("#numeroDeVale");
           let cantidadesDeLeches = document.querySelectorAll(".cantidadLeche");
-          let ids = [];
-          $.getJSON(`/getValesIds`, function (data) {
-            ids = data;
+          let ids = await makeRequestGet(token, header, `/getForEntradaId/${idInUse}`, '/');
+          console.log(ids);
             for (let i = 0; i < codigos.length; i++) {
-              let codigo = codigos[i].value;
-              let leche = cantidadesDeLeches[i].value;
-              let numeroDeVale = numerosDeVale[i].value;
+            	let codigosDisponibles = await makeRequestGet(token, header, "/providersCodes", '/');
+            	let codigo = codigos[i].value;
+                let leche = cantidadesDeLeches[i].value;
+                let numeroDeVale = numerosDeVale[i].value;
+                if(!codigosDisponibles.includes(codigo)){
+                	alert(codigo + " no es un proveedor válido");
+            		return;
+                }
+                if(leche <= 0){
+                	alert("La cantidad de leche en " + codigo + " no puede ser menor o igual a cero");
+            		return;
+                }
               let entry = {
                 "id": ids[i],
                 "numero_de_vale": numeroDeVale,
-                "codigo_proveedor": codigo,
+                "codigoProveedor": codigo,
                 "cantidad_de_leche": +leche
               }
-              console.log(total.textContent, totalInicial);
-              var datosEntrada = {
-                "nombreDelChofer": document.getElementById("nombreChoferInput").value,
-                "ruta": document.getElementById("rutaInput").value,
-                "fecha": $("#fechaInput").val(),
-                "cantidadLeche": total,
-              };
               var mes = new Date($("#fechaInput").val()).toLocaleString("es-ES", { month: "long" });
               var año = new Date($("#fechaInput").val()).getFullYear();
               var data = { "mes": mes, "year": año, "cantidadDeLeche": +total.textContent };
               if (total.textContent > totalInicial) {
+            	data.cantidadDeLeche = total.textContent - totalInicial;
                 makeRequestPost(token, header, `/incrementInProvider`, { "codigo": codigo, "cantidadDeLeche": +leche }, "/vales");
                 makeRequestPost(token, header, `/incrementInMunicipio`, { "codigo": codigo, "cantidadDeLeche": +leche }, "/vales");
                 makeRequestPost(token, header, `/incrementInRegistry`, data, "/vales");
               } else {
+            	data.cantidadDeLeche = totalInicial - total.textContent;
                 makeRequestPost(token, header, `/decrementInProvider`, { "codigo": codigo, "cantidadDeLeche": +leche }, "/vales");
                 makeRequestPost(token, header, `/decrementInMunicipio`, { "codigo": codigo, "cantidadDeLeche": +leche }, "/vales");
                 makeRequestPost(token, header, `/decrementInRegistry`, data, "/vales");
               }
               makeRequestPost(token, header, `/updateVale`, entry, "/");
             }
-          })
+            var datosEntrada = {
+                    "id": idInUse,
+                    "nombreDelChofer": document.getElementById("nombreChoferInput").value,
+                    "ruta": document.getElementById("rutaInput").value,
+                    "fecha": new Date($("#fechaInput").val()),
+                    "cantidadLeche": +total.textContent,
+                  };
+
+          makeRequestPost(token, header, "/updateEntrada", datosEntrada, "/");
+       
 
           window.location.reload();
         }

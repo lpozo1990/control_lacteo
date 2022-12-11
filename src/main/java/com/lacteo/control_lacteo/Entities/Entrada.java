@@ -32,7 +32,7 @@ public class Entrada {
     private List<Vale> vales;
 
     private String nombreDelChofer;
-    @DateTimeFormat(pattern = "dd-MM-yyyy")
+    
     private Date fecha;
     
     private String ruta;

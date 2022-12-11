@@ -3,6 +3,7 @@ package com.lacteo.control_lacteo.Controllers;
 import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -49,7 +50,16 @@ public class NewRegistryController {
 	@PostMapping("incrementInRegistry")
 	void incrementInRegistry(@RequestBody Registro registro) {
 		System.out.println(registro);
-		this.regService.incrementInRegistry(registro.getMes(), registro.getYear(), registro.getCantidadDeLeche());
+		List<Registro> registros = this.registroRepo.findByMesAndYear(registro.getMes(), registro.getYear());
+		if(registros.isEmpty()) {
+			Registro nuevoReg = new Registro();
+			nuevoReg.setMes(registro.getMes());
+			nuevoReg.setYear(registro.getYear());
+			nuevoReg.setCantidadDeLeche(registro.getCantidadDeLeche());
+			this.registroRepo.save(nuevoReg);
+		} else {			
+			this.regService.incrementInRegistry(registro.getMes(), registro.getYear(), registro.getCantidadDeLeche());
+		}
 	}
 
 	@PostMapping("decrementInRegistry")
@@ -60,8 +70,17 @@ public class NewRegistryController {
 			 Registro reg = result.get(0);
 			 this.registroRepo.delete(reg);
 		 }
-         System.out.println(cantidad);
-         this.regService.decrementInRegistry(registro.getMes(), registro.getYear(), registro.getCantidadDeLeche());
+			List<Registro> registros = this.registroRepo.findByMesAndYear(registro.getMes(), registro.getYear());
+			if(registros.isEmpty()) {
+				Registro nuevoReg = new Registro();
+				nuevoReg.setMes(registro.getMes());
+				nuevoReg.setYear(registro.getYear());
+				nuevoReg.setCantidadDeLeche(registro.getCantidadDeLeche());
+				this.registroRepo.save(nuevoReg);
+			} else {				
+				System.out.println(cantidad);
+				this.regService.decrementInRegistry(registro.getMes(), registro.getYear(), registro.getCantidadDeLeche());
+			}
     }
 
 	@GetMapping("getValesForId/{id}")
@@ -70,9 +89,15 @@ public class NewRegistryController {
 		return this.valeRepo.getValesForId(id);
 	}
 
-	@GetMapping("getValesIds")
-	List<Integer> getValesIds() {
-		return this.valeRepo.getValesIds();
+	@GetMapping("getForEntradaId/{id}")
+	List<Integer> getValesIds(@PathVariable Integer id) {
+		Entrada ent = this.entRepo.findById(id).get();
+		List<Integer> ids =new ArrayList<Integer>();
+		ent.getVales().forEach((vale) -> {
+			ids.add(vale.getId());
+		});
+		
+		return ids;
 	}
 
 	@PostMapping("newEntry")
