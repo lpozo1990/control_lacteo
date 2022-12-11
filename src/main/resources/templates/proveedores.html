@@ -87,7 +87,7 @@
         </div>
 
         <div class="container d-none mt-3 control-datos-nombre-proveedor">
-          <form autocomplete="off" th:object="${Proveedor}" th:action="@{/newProvider}" method="post">
+          <form autocomplete="off" th:object="${Proveedor}" onsubmit="checkValidation(event)" th:action="@{/newProvider}" method="post">
             <div class="mb-3">
               <label for="exampleInputEmail1" class="form-label">Código del Proveedor</label>
               <input type="number" class="form-control"   id="codigoProveedor" required th:field="*{codigo}" value="" />
@@ -144,6 +144,42 @@
             }
           });
         });
+        
+       async function checkValidation(event){
+        	event.preventDefault();
+        	let codigos = await getCodigos();
+        	
+        	if(!codigos.includes(document.querySelector("#codigoProveedor").value)){
+        		event.target.submit();
+        	} else{
+        		alert(`El código ${document.querySelector("#codigoProveedor").value} ya existe`)
+        	}
+        }
+       async function checkValidationForUpdate(event, initialCode){
+        	event.preventDefault();
+        	let codigos = await getCodigos();
+        	console.log(codigos);
+        	let valueInside = document.querySelector("#codigoProveedor").value;
+        	let filteredCodes = codigos.filter(l => l !== initialCode);
+        	console.log(initialCode,valueInside, filteredCodes);
+        	if(initialCode != valueInside && !filteredCodes.includes(valueInside)){
+        		event.target.submit();
+        	}
+        	else if(initialCode == valueInside){
+        		event.target.submit();
+        	}
+        	else if(initialCode != valueInside && filteredCodes.includes(valueInside)) {
+        		alert(`${valueInside} esta en uso`);
+        	}
+        	
+        }
+        
+        async function getCodigos(){
+        	let data = await makeRequestGet(token, header, "/getProviders", "/");
+        	return data.map(p => p.codigo);
+        }
+        
+
         var token = $("meta[name='_csrf']").attr("content");
         var header = $("meta[name='_csrf_header']").attr("content");
         async function deseaEliminar(id, nombre) {
@@ -153,12 +189,13 @@
 
         function editarProveedor(id, nombre, codigo, municipio) {
           addNew();
-          document.querySelector("#codigoProveedor").value = codigo;
           document.querySelector("#crearNuevoChocher").classList.add("d-none");
           document.querySelector(".crearNuevo").textContent = "Actualizar";
           document.querySelector("#nombreProveedor").value = nombre;
           document.querySelector("#municipiosAutocomplete").value = municipio;
           let formulario = document.querySelector("div.container.control-datos-nombre-proveedor > form")
+          document.querySelector("#codigoProveedor").value = codigo;
+          formulario.setAttribute("onsubmit", `checkValidationForUpdate(event, ${codigo})`);
           formulario.action = `actualizarProveedor/${+id}`
         }
 

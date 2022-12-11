@@ -21,11 +21,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.lacteo.control_lacteo.Entities.Entrada;
+import com.lacteo.control_lacteo.Entities.Proveedor;
 import com.lacteo.control_lacteo.Entities.Registro;
 import com.lacteo.control_lacteo.Entities.Vale;
 import com.lacteo.control_lacteo.Service.NewRegistryService;
 import com.lacteo.control_lacteo.repositories.EntradaRepository;
 import com.lacteo.control_lacteo.repositories.MunicipioRepository;
+import com.lacteo.control_lacteo.repositories.ProviderRepository;
 import com.lacteo.control_lacteo.repositories.RegistroRepository;
 import com.lacteo.control_lacteo.repositories.ValeRepository;
 
@@ -34,6 +36,8 @@ public class NewRegistryController {
 
 	@Autowired
 	private NewRegistryService regService;
+	@Autowired
+	private ProviderRepository provRepo;
 	@Autowired
 	private EntradaRepository entRepo;
 	@Autowired
@@ -61,7 +65,10 @@ public class NewRegistryController {
 			this.regService.incrementInRegistry(registro.getMes(), registro.getYear(), registro.getCantidadDeLeche());
 		}
 	}
-
+	@GetMapping("getProviders")
+	Iterable<Proveedor> getProviders(){
+		return this.provRepo.findAll();
+	}
 	@PostMapping("decrementInRegistry")
     void decrementInRegistry(@RequestBody Registro registro) {
 		 long cantidad = this.entRepo.count();

@@ -58,14 +58,12 @@
               <tr>
                 <th scope="col">Nombre del municipio</th>
                 <th scope="col">Cantidad de Leche</th>
-                <th scope="col">Acciones</th>
               </tr>
             </thead>
             <tbody>
               <tr th:each="municipio: ${municipios}">
                 <td th:text="${municipio.nombre}" scope="row"><a href="#"></a> </td>
                 <td th:text="${municipio.cantidadDeLeche}" scope="row"><a href="#"></a> </td>
-                <td><a  th:onclick="deseaEliminar([[${municipio.id}]], [[${municipio.nombre}]])"  href="#">Eliminar</a></td>
               </tr>
             </tbody>
           </table>
@@ -138,10 +136,6 @@
         }
     });
 } );
-     async function deseaEliminar(id, nombre){
-      var url = "/municipio/eliminar/" + id;
-      makeRequest(id, nombre, token, header, url, "DELETE", "/informes" )
-      }
 
       let form = document.querySelector(".control-datos-nombre-municipio");
       let list = document.querySelector(".tabla-container");
