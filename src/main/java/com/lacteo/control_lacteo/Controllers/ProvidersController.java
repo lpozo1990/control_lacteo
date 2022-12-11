@@ -1,5 +1,7 @@
 package com.lacteo.control_lacteo.Controllers;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -14,10 +16,12 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.lacteo.control_lacteo.Entities.Municipio;
 import com.lacteo.control_lacteo.Entities.Proveedor;
+import com.lacteo.control_lacteo.Entities.Vale;
 import com.lacteo.control_lacteo.Service.MunicipioService;
 import com.lacteo.control_lacteo.Service.ProvidersService;
 import com.lacteo.control_lacteo.repositories.MunicipioRepository;
 import com.lacteo.control_lacteo.repositories.ProviderRepository;
+import com.lacteo.control_lacteo.repositories.ValeRepository;
 
 /**
  * ProvidersController
@@ -27,6 +31,8 @@ public class ProvidersController {
 	@Autowired
 	private MunicipioRepository municipioRepo;
     private MunicipioService municipioService;
+    @Autowired
+    private ValeRepository valeRepo;
 
     @Autowired
     public void setMunicipioService(MunicipioService municipioService) {
@@ -68,6 +74,14 @@ public class ProvidersController {
 
     @RequestMapping(value = "actualizarProveedor/{id}", method = RequestMethod.POST, consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
     public String updateProvider(@PathVariable Integer id, @RequestBody MultiValueMap<String, String> formData) {
+    	Proveedor actualProv = this.provRepo.findById(id).get();
+    	List<Vale> vales = this.valeRepo.findAllByCodigoProveedor(actualProv.getCodigo());
+    	if(!actualProv.getCodigo().equals(formData.getFirst("codigo")) && (!vales.isEmpty())) {
+    		vales.forEach((vale) -> {
+    			vale.setCodigoProveedor(formData.getFirst("codigo"));
+    			this.valeRepo.save(vale);
+    		});
+    	};
         this.provRepo.updateProvider(id, formData.getFirst("nombre"), formData.getFirst("municipio"), formData.getFirst("codigo"));
     	Proveedor pro = this.provRepo.findById(id).get();
     	String municipio = pro.getMunicipio();

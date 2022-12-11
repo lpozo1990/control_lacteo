@@ -26,7 +26,7 @@ public class Vale implements Serializable {
     @JoinColumn(name="entrada_id", nullable = true)
     private Entrada entrada;
     private String numero_de_vale;
-    private String codigo_proveedor;
+    private String codigoProveedor;
     private Integer cantidad_de_leche;
     
 }

@@ -12,7 +12,9 @@ import org.springframework.stereotype.Repository;
 import com.lacteo.control_lacteo.Entities.Vale;
 @Repository
 public interface ValeRepository extends JpaRepository<Vale, Integer> {
-    
+
+List<Vale> findAllByCodigoProveedor(String codigo_proveedor);	
+	
 @Query(value="SELECT numero_de_vale, codigo_proveedor, cantidad_de_leche  FROM vales LEFT JOIN entradas ON vales.entrada_id = entradas.id WHERE entrada_id=?1", nativeQuery = true)
 List<Object> getValesForId(Integer id);
 

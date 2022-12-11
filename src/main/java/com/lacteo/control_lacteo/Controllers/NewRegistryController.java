@@ -85,7 +85,7 @@ public class NewRegistryController {
 			Vale newVale = new Vale();
 			newVale.setEntrada(entrada);
 			newVale.setNumero_de_vale(vale.getNumero_de_vale());
-			newVale.setCodigo_proveedor(vale.getCodigo_proveedor());
+			newVale.setCodigoProveedor(vale.getCodigoProveedor());
 			newVale.setCantidad_de_leche(vale.getCantidad_de_leche());
 			System.out.println(newVale);
 			this.valeRepo.save(newVale);

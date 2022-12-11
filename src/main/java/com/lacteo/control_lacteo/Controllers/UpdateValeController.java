@@ -20,6 +20,6 @@ public class UpdateValeController {
     @PostMapping("/updateVale")
     void updateOne(@RequestBody Vale vale){
         System.out.println(vale);
-        this.valeRepo.updateOne(vale.getCantidad_de_leche(), vale.getNumero_de_vale(), vale.getCodigo_proveedor(), vale.getId());
+        this.valeRepo.updateOne(vale.getCantidad_de_leche(), vale.getNumero_de_vale(), vale.getCodigoProveedor(), vale.getId());
     }
 }
