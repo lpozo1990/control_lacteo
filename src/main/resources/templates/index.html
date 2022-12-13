@@ -54,13 +54,13 @@ body {
 						<div class="mb-3">
 							<label for="exampleInputEmail1" class="form-label">Nombre
 								del Chofer</label> <input type="text" class="form-control" required
-								pattern="^[a-zA-Z\s]*$" oninvalid="getInvalid(this)"
+								pattern="^[A-zÀ-ú\s]*$" oninvalid="getInvalid(this)"
 								oninput="setCustomValidity('')" id="nombreChoferInput"
 								th:field="*{nombre}" value="" /> <label
 								for="exampleInputEmail1" class="form-label">Apellidos</label> <input
 								type="text" class="form-control" th:field="*{apellidos}"
 								required
-								pattern="^[a-zA-Z\s]*$" oninvalid="getInvalid(this)"
+								pattern="^[A-zÀ-ú\s]*$" oninvalid="getInvalid(this)"
 								oninput="setCustomValidity('')"
 								id="apellidosChoferInput" value="" />
 						</div>
