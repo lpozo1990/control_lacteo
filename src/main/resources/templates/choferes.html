@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="_csrf" th:content="${_csrf.token}" />
+<!-- default header name is X-CSRF-TOKEN -->
+<meta name="_csrf_header" th:content="${_csrf.headerName}" />
+<title>Control Lacteo</title>
+<div th:replace="fragments/css:: css"></div>
+</head>
+<style>
+body {
+    background: url("/images/bg.png");
+    background-position-x: 0rem;
+    background-size: cover;
+    background-position-y: -22rem;
+    opacity: 4.5;
+}
+ .header-content {
+  margin-top: 20px;
+  -webkit-box-flex: 1;
+  -webkit-flex-grow: 1;
+      -ms-flex-positive: 1;
+          flex-grow: 1;
+  max-width: 550px;
+}
+
+ .header-content .header-title .up {
+  font-size: calc(30px + (60 - 30) * ((100vw - 300px) / (1300 - 300)));
+  font-weight: 500;
+  color: #444;
+  margin-bottom: 5px;
+  position: relative;
+  display: block;
+}
+
+ .header-content .header-title .down {
+  font-size: calc(30px + (75 - 30) * ((100vw - 300px) / (1300 - 300)));
+  margin-bottom: 0;
+  position: relative;
+  display: block;
+}
+
+ .header-content .header-subtitle {
+  font-size: calc(10px + (22 - 10) * ((100vw - 300px) / (1300 - 300)));
+  letter-spacing: calc(1px + (7 - 1) * ((100vw - 300px) / (1300 - 300)));
+  opacity: .8;
+  margin-top: -10px;
+  margin-bottom: 20px;
+}
+
+ .header-content .btn {
+  position: relative;
+  margin-top: 20px;
+  border-radius: 20px;
+  padding: 8px 15px;
+}
+</style>
+<body>
+	<div class="header-content welcome-message container bg-white p-4">
+		<h1 class="header-title">
+			<span class="up">Bienvenido</span>
+		</h1>
+		<img alt="logo" class="p-2" src="/images/logoBani.png ">
+		<p class="header-subtitle">Control Lácteo v1.0</p>
+		<div>
+		<button id="continuar" onclick="continuar()" class="btn btn-primary">Continuar</button>
+		<button id="logout" class="btn btn-secondary px-4">Salir</button>
+		</div>
+	</div>
+	<div class="main-content d-none">
+		<div th:replace="fragments/svg:: svg"></div>
+		<div class="container">
+			<h1 class="m-2 text-center bg-light">Control Lácteo</h1>
+			<div class="container d-flex">
+				<div th:replace="fragments/sidemenu :: sidemenu"></div>
+				<div class="container">
+					<a name="" id="crearNuevoChocher" onclick="addNew()"
+						class="btn btn-primary float-end mb-3" href="#" role="button">Crear
+						nuevo chofer</a>
+					<div class="tabla-container">
+						<table class="table  tabla-choferes">
+							<thead>
+								<tr>
+									<th scope="col">Nombre</th>
+									<th scope="col">Apellidos</th>
+									<th scope="col">Acciones</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr th:each="chofer : ${choferes}">
+									<td th:text="${chofer.nombre}" scope="row"><a href="#"></a>
+									</td>
+									<td th:text="${chofer.apellidos}" scope="row"><a href="#"></a>
+									</td>
+									<td><a
+										th:onclick="editar([[${chofer.nombre}]], [[${chofer.apellidos}]], [[${chofer.id}]])"
+										href="#">Editar</a> <a
+										th:onclick="deseaEliminar([[${chofer.id}]], [[${chofer.nombre}]])"
+										href="#">Eliminar</a></td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+					<div class="container d-none control-datos-nombre-chofer">
+						<form th:object="${Chofer}" th:action="@{/newChofer}"
+							method="post">
+							<div class="mb-3">
+								<label for="exampleInputEmail1" class="form-label">Nombre
+									del Chofer</label> <input type="text" class="form-control" required
+									pattern="^[A-zÀ-ú\s]*$" oninvalid="getInvalid(this)"
+									oninput="setCustomValidity('')" id="nombreChoferInput"
+									th:field="*{nombre}" value="" /> <label
+									for="exampleInputEmail1" class="form-label">Apellidos</label> <input
+									type="text" class="form-control" th:field="*{apellidos}"
+									required pattern="^[A-zÀ-ú\s]*$" oninvalid="getInvalid(this)"
+									oninput="setCustomValidity('')" id="apellidosChoferInput"
+									value="" />
+							</div>
+							<button type="submit" class="btn btn-primary crearNuevo">Crear</button>
+							<button type="button" onclick="window.location.href = '/'"
+								class="btn btn-secondary irAtras">Atrás</button>
+						</form>
+
+					</div>
+				</div>
+				<div th:replace="fragments/js:: js"></div>
+			</div>
+			<script>
+			if(localStorage.getItem("welcomeViewAlreadyDisplayed")){
+				continuar()
+			}
+				$(document).ready(function() {
+					var DataTable = $('.tabla-choferes').DataTable({
+						dom : 'Bfrtip',
+
+						buttons : [ {
+							extend : 'print',
+							text : "Imprimir",
+							exportOptions : {
+								columns : [ 0, 1 ]
+							}
+						}, {
+							extend : 'excelHtml5',
+							text : "XLS",
+							exportOptions : {
+								columns : [ 0, 1 ]
+							}
+						}, {
+							extend : 'pdfHtml5',
+							exportOptions : {
+								columns : [ 0, 1 ]
+							}
+						}, ],
+						language : {
+							url : window.location.origin + '/js/es-AR.json'
+						}
+					});
+				});
+
+				function editar(nombre, apellidos, id) {
+					addNew();
+					document.querySelector("#nombreChoferInput").value = nombre;
+					document.querySelector("#apellidosChoferInput").value = apellidos;
+					document.querySelector(".crearNuevo").textContent = 'Actualizar'
+					let formulario = document
+							.querySelector("div.container.control-datos-nombre-chofer > form")
+					formulario.action = `/actualizarChofer/${+id}`
+				}
+
+				function getInvalid(event) {
+					if (event.validity.patternMismatch)
+						event
+								.setCustomValidity('El nombre no puede contener números')
+				}
+
+				async
+				function deseaEliminar(id, nombre) {
+					let confirmation = window
+							.confirm(`Desea eliminar al chofer ${nombre}?`);
+					if (confirmation) {
+						$.ajax({
+							url : "/chofer/eliminar/" + id,
+							type : 'DELETE',
+							data : token,
+							beforeSend : function(xhr) {
+								xhr.setRequestHeader(header, token);
+							},
+							success : function(data) {
+								window.location = "/";
+							},
+							error : function(data) {
+								console.log(data);
+							}
+						})
+					}
+
+				}
+
+				let form = document
+						.querySelector(".control-datos-nombre-chofer");
+				let list = document.querySelector(".tabla-container");
+				let crearNuevoChoferBtn = document
+						.querySelector("#crearNuevoChocher");
+				function addNew() {
+					form.classList.remove("d-none");
+					list.classList.add("d-none");
+					crearNuevoChoferBtn.classList.add("d-none");
+				}
+				
+				function continuar(){
+					document.querySelector("body").style.background = "white"
+					document.querySelector(".main-content").classList.remove("d-none");
+					document.querySelector(".welcome-message").classList.add("d-none");
+					localStorage.setItem("welcomeViewAlreadyDisplayed", true)
+				}
+			</script>
+</body>
+</html>

@@ -32,13 +32,13 @@ public class DriversController {
     public void setChoferRepository(ChoferRepository choferRepo) {
         this.choferRepo = choferRepo;
     }
-    @RequestMapping("/")
+    @RequestMapping("/choferes")
     String listAll(Model model){
      String username = SecurityContextHolder.getContext().getAuthentication().getName();
      model.addAttribute("username", username);
      model.addAttribute("Chofer", new Chofer());
      model.addAttribute("choferes", this.choferService.listAllChofers());
-     return "index";   
+     return "choferes";   
     }
 
     /**

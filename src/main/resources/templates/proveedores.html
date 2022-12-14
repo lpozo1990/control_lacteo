@@ -145,10 +145,17 @@
           });
         });
         
+        function chequearValidacionDeMunicipios(){
+			if(!municipios.includes(document.querySelector("#municipiosAutocomplete").value)){
+				alert(`El municipio ${document.querySelector("#municipiosAutocomplete").value} no es válido`);
+				return;
+			}    
+        }
+        
        async function checkValidation(event){
         	event.preventDefault();
         	let codigos = await getCodigos();
-        	
+        	chequearValidacionDeMunicipios();
         	if(!codigos.includes(document.querySelector("#codigoProveedor").value)){
         		event.target.submit();
         	} else{
@@ -157,8 +164,11 @@
         }
        async function checkValidationForUpdate(event, initialCode){
         	event.preventDefault();
+			if(!municipios.includes(document.querySelector("#municipiosAutocomplete").value)){
+				alert(`El municipio ${document.querySelector("#municipiosAutocomplete").value} no es válido`);
+				return;
+			}    
         	let codigos = await getCodigos();
-        	console.log(codigos);
         	let valueInside = document.querySelector("#codigoProveedor").value;
         	let filteredCodes = codigos.filter(l => l !== initialCode);
         	console.log(initialCode,valueInside, filteredCodes);
